@@ -1,0 +1,368 @@
+object F_WebPlayer: TF_WebPlayer
+  Left = 799
+  Height = 419
+  Top = 112
+  Width = 483
+  BorderIcons = []
+  Caption = 'WebPlayerCreator : Générer un Player audio Statique'
+  ClientHeight = 419
+  ClientWidth = 483
+  Color = clBtnFace
+  DefaultMonitor = dmPrimary
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.0.10.0'
+  object spSkinPanel1: TPanel
+    Left = 0
+    Height = 30
+    Top = 389
+    Width = 483
+    Align = alBottom
+    ClientHeight = 30
+    ClientWidth = 483
+    TabOrder = 0
+    object pb_ProgressInd: TFlatGauge
+      Left = 1
+      Height = 28
+      Top = 1
+      Width = 144
+      AdvColorBorder = 0
+      ColorBorder = 8623776
+      Progress = 25
+      Align = alLeft
+    end
+    object FWClose1: TFWClose
+      Left = 377
+      Height = 25
+      Top = 2
+      Width = 98
+      Caption = 'Fermer'
+      TabOrder = 0
+      Anchors = [akTop, akRight]
+    end
+    object lb_Comments: TLabel
+      Left = 147
+      Height = 15
+      Top = 10
+      Width = 69
+      Caption = 'Bienvenue !'
+      ParentColor = False
+    end
+    object bt_gen: TFWExport
+      Left = 287
+      Height = 25
+      Top = 2
+      Width = 88
+      Caption = 'Indexer'
+      TabOrder = 1
+      Anchors = [akTop, akRight]
+      OnClick = bt_genClick
+    end
+  end
+  object pa_options: TPanel
+    Left = 0
+    Height = 389
+    Top = 0
+    Width = 483
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'I'
+    ClientHeight = 389
+    ClientWidth = 483
+    TabOrder = 1
+    object Label2: TLabel
+      Left = 4
+      Height = 15
+      Top = 5
+      Width = 47
+      Caption = 'Auteur :'
+      ParentColor = False
+    end
+    object ed_Author: TEdit
+      Left = 103
+      Height = 22
+      Top = 0
+      Width = 375
+      Anchors = [akTop, akLeft, akRight]
+      ParentColor = True
+      TabOrder = 0
+    end
+    object me_Description: TMemo
+      Left = 4
+      Height = 74
+      Top = 64
+      Width = 474
+      Anchors = [akTop, akLeft, akRight]
+      ParentColor = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 1
+    end
+    object Label3: TLabel
+      Left = 4
+      Height = 15
+      Top = 48
+      Width = 72
+      Caption = 'Description :'
+      ParentColor = False
+    end
+    object lb_Images: TLabel
+      Left = 8
+      Height = 15
+      Top = 173
+      Width = 109
+      Caption = 'Dossier à indexer :'
+      ParentColor = False
+    end
+    object FWEraseImage: TFWErase
+      Left = 184
+      Height = 25
+      Top = 137
+      Width = 20
+      Caption = 'Supprimer'
+      TabOrder = 2
+      Font.Color = 2171169
+      ParentFont = False
+    end
+    object ed_IndexName: TEdit
+      Left = 103
+      Height = 22
+      Top = 24
+      Width = 375
+      Anchors = [akTop, akLeft, akRight]
+      ParentColor = True
+      TabOrder = 3
+      Text = 'index'
+    end
+    object Label10: TLabel
+      Left = 4
+      Height = 15
+      Top = 29
+      Width = 92
+      Caption = 'Nom du fichier :'
+      ParentColor = False
+    end
+    object de_indexdir: TDirectoryEdit
+      Left = 124
+      Height = 22
+      Top = 168
+      Width = 248
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 0
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      TabOrder = 4
+    end
+    object bt_export: TFWExport
+      Left = 3
+      Height = 25
+      Top = 296
+      Width = 88
+      Caption = 'Exporter'
+      TabOrder = 5
+      OnClick = bt_exportClick
+    end
+    object fne_import: TFileNameEdit
+      Left = 95
+      Height = 22
+      Top = 264
+      Width = 358
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 0
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      TabOrder = 6
+      OnChange = fne_importChange
+    end
+    object Label11: TLabel
+      Left = 7
+      Height = 15
+      Top = 271
+      Width = 58
+      Caption = 'Importer :'
+      ParentColor = False
+    end
+    object fne_export: TFileNameEdit
+      Left = 95
+      Height = 22
+      Top = 296
+      Width = 358
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 0
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      TabOrder = 7
+    end
+    object Label44: TLabel
+      Left = 7
+      Height = 15
+      Top = 240
+      Width = 54
+      Caption = 'Sources :'
+      ParentColor = False
+    end
+    object cb_Files: TComboBox
+      Left = 93
+      Height = 26
+      Top = 232
+      Width = 384
+      Anchors = [akTop, akLeft, akRight]
+      Color = clBtnFace
+      ItemHeight = 0
+      Style = csDropDownList
+      TabOrder = 8
+    end
+    object me_Bottom: TMemo
+      Left = 3
+      Height = 42
+      Top = 344
+      Width = 475
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      ParentColor = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 9
+    end
+    object Label6: TLabel
+      Left = 3
+      Height = 15
+      Top = 328
+      Width = 142
+      Caption = 'En bas de chaque page :'
+      ParentColor = False
+    end
+    object ch_MP3: TJvXPCheckbox
+      Left = 4
+      Height = 17
+      Top = 144
+      Width = 60
+      Caption = 'MP3'
+      TabOrder = 10
+      Checked = True
+      State = cbChecked
+      UseDockManager = False
+    end
+    object ch_WMA: TJvXPCheckbox
+      Left = 152
+      Height = 17
+      Top = 144
+      Width = 60
+      Caption = 'WMA'
+      TabOrder = 11
+      Checked = True
+      State = cbChecked
+      UseDockManager = False
+    end
+    object bt_see: TFWSearch
+      Left = 398
+      Height = 25
+      Top = 168
+      Caption = 'Voir'
+      TabOrder = 12
+      Anchors = [akTop, akRight]
+      OnClick = bt_seeClick
+    end
+    object cb_Themes: TComboBox
+      Left = 93
+      Height = 25
+      Top = 206
+      Width = 385
+      Anchors = [akTop, akLeft, akRight]
+      Color = clBtnFace
+      ItemHeight = 0
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 13
+    end
+    object L_thema: TLabel
+      Left = 7
+      Height = 15
+      Top = 211
+      Width = 48
+      Caption = 'Thème :'
+      ParentColor = False
+      ParentShowHint = False
+      ShowHint = True
+    end
+  end
+  object ch_OGG: TJvXPCheckbox
+    Left = 80
+    Height = 17
+    Top = 144
+    Width = 60
+    Caption = 'OGG'
+    TabOrder = 2
+    Checked = True
+    State = cbChecked
+    UseDockManager = False
+  end
+  object IBQ_Individu: TIBQuery
+    BufferChunks = 1000
+    CachedUpdates = False
+    GeneratorField.ApplyOnEvent = gaeOnNewRecord
+    SQL.Strings = (
+      'select  CLE_FICHE,NUM_SOSA,'
+      '              b.EV_IND_VILLE as VILLE_BIRTH,'
+      '              d.EV_IND_VILLE as VILLE_DEATH,'
+      'CLE_PERE,CLE_MERE,NOM,PRENOM,SEXE, ANNEE_NAISSANCE,ANNEE_DECES from INDIVIDU left join EVENEMENTS_IND b on b.EV_IND_KLE_FICHE=cle_fiche and b.EV_IND_TYPE=''BIRT'' left join EVENEMENTS_IND d on d.EV_IND_KLE_FICHE=cle_fiche and d.EV_IND_TYPE=''DEAT'''
+      'WHERE KLE_DOSSIER=:KLE_DOSSIER '
+      'ORDER BY '
+      'NOM,PRENOM,ANNEE_NAISSANCE DESC,ANNEE_DECES DESC'
+    )
+    Params = <    
+      item
+        DataType = ftInteger
+        Name = 'KLE_DOSSIER'
+        ParamType = ptInput
+      end>
+    left = 560
+    top = 256
+    ParamData = <    
+      item
+        DataType = ftInteger
+        Name = 'KLE_DOSSIER'
+        ParamType = ptInput
+      end>
+  end
+  object ds_Individu: TDatasource
+    DataSet = IBQ_Individu
+    left = 328
+    top = 248
+  end
+  object OpenDialog: TOpenDialog
+    Title = 'Fichier de la base de données'
+    Filter = 'Tous les fichiers (*.*)|*.*|Bases Firebird/Interbase (*.fdb,*.gdb)|*.fdb;*.gdb'
+    FilterIndex = 0
+    Options = [ofHideReadOnly, ofNoNetworkButton, ofViewDetail]
+    left = 472
+    top = 152
+  end
+  object OnFormInfoIni: TOnFormInfoIni
+    SaveEdits = [feTEdit, feTCheck, feTComboValue, feTDirectoryEdit, feTFileNameEdit, feTMemo, feTRadio, feTRadioGroup, feTSpinEdit]
+    SaveForm = [sfSavePos, sfSaveSizes]
+    Options = [loAutoUpdate, loAutoWrite]
+    left = 280
+    top = 160
+  end
+  object FileCopy: TExtFileCopy
+    Errors = 0
+    Mask = '*'
+    FileOptions = [cpUseFilter, cpCreateDestination]
+    left = 288
+    top = 64
+  end
+  object FileIniCopy: TExtFileCopy
+    Errors = 0
+    Mask = '*'
+    FileOptions = [cpUseFilter, cpDestinationIsFile, cpCreateDestination]
+    left = 176
+    top = 72
+  end
+end
