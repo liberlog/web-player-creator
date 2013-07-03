@@ -64,10 +64,11 @@ const
                                              FileUnit : 'U_WebPlayer' ;
                                              Owner : 'Matthieu Giroux' ;
                                              Comment : 'Créateur de player HTNL statique.' ;
-                                             BugsStory : '1.0.0.0 : Jquery playlist version.' + 1#13#10
+                                             BugsStory : '1.0.1.0 : File sorting.' + 1#13#10
+                                                       + '1.0.0.0 : Jquery playlist version.' + 1#13#10
                                                        + '0.9.9.0 : First published version'  ;
                                              UnitType : CST_TYPE_UNITE_APPLI ;
-                                             Major : 1 ; Minor : 0 ; Release : 0 ; Build : 0 );
+                                             Major : 1 ; Minor : 0 ; Release : 1 ; Build : 0 );
 {$ENDIF}
 
 const CST_WebPlayer = 'PlayerCreator' ;
