@@ -76,7 +76,12 @@ const CST_WebPlayer = 'PlayerCreator' ;
       CST_INDEX_FILE = CST_INDEX+'file';
       CST_SUBDIR_EXPORT = 'List'+DirectorySeparator;
       CST_SUBDIR_FILES = 'Files' + DirectorySeparator;
+      CST_SUBDIR_CLASSES = 'Classes' + DirectorySeparator;
       CST_SUBDIR_THEMES = 'Themes' + DirectorySeparator;
+      CST_EXTENSION_PNG = 'png';
+      CST_EXTENSION_OGG = 'ogg';
+      CST_EXTENSION_MP3 = 'mp3';
+      CST_EXTENSION_WMA = 'wma';
 
 type
 
@@ -129,7 +134,7 @@ type
   private
     { Déclarations privées }
     procedure DoAfterInit(const ab_Ini: Boolean=True);
-    procedure p_AddFiles ( const as_Source : String ; var astl_files : TStringList; const ai_eraseBegin : Integer; var astl_temp1 : TStringList );
+    procedure p_AddFiles ( const as_Source, as_artist : String ; var astl_files : TStringList; const ai_eraseBegin : Integer; var astl_temp1 : TStringList ; var ab_first : Boolean );
     procedure p_AddToCombo(const acb_combo: TComboBox; const as_Base: String;
       const ab_SetIndex: Boolean=True);
     procedure p_CreateAHtmlFile(const astl_Destination: TStrings;
@@ -206,23 +211,47 @@ begin
   bt_exportClick(bt_export);
 end;
 
-procedure TF_WebPlayer.p_AddFiles ( const as_Source : String ; var astl_files : TStringList; const ai_eraseBegin : Integer; var astl_temp1 : TStringList );
+procedure TF_WebPlayer.p_AddFiles ( const as_Source, as_artist : String ; var astl_files : TStringList; const ai_eraseBegin : Integer; var astl_temp1 : TStringList; var ab_first : Boolean );
 var li_Error, li_EndExt : Integer ;
     ls_Source ,
     ls_FileName ,
     ls_FileNameLower ,
     ls_destination  : String;
     lsr_AttrSource      : Tsearchrec;
+    lb_first : Boolean;
     lstl_temp2 : TStringList ;
     procedure p_addFile( const ab_add : Boolean; const as_Ext : String );
+    var ls_FileWithoutExt : String;
+        li_pos : Integer;
     begin
-      if ab_add and ( PosEx ( '.'+as_Ext, ls_FileNameLower, li_EndExt ) > 0 )
+      li_pos := PosEx ( '.'+as_Ext, ls_FileNameLower, li_EndExt );
+      if ab_add and ( li_pos > 0 )
        then
          Begin
            p_LoadStringList ( astl_temp1, gs_Root, CST_INDEX_FILE+CST_EXTENSION_HTML );
+           ls_FileWithoutExt := copy ( ls_Source, 1, PosEx ( '.'+as_Ext, ls_Source, length ( ls_Source ) - 4 ) - 1 );
+           if FileExistsUTF8(ls_FileWithoutExt+'.'+CST_EXTENSION_PNG)
+            Then p_ReplaceLanguageString(astl_temp1,'SourcePoster',copy ( ls_Source, ai_eraseBegin, PosEx ( '.'+as_Ext, ls_Source, length ( ls_Source ) - 4 ) - ai_eraseBegin )+'.'+CST_EXTENSION_PNG,[rfReplaceAll])
+            else if FileExistsUTF8(ls_FileWithoutExt+'.'+CST_EXTENSION_JPEG)
+             Then p_ReplaceLanguageString(astl_temp1,'SourcePoster',copy ( ls_Source, ai_eraseBegin, PosEx ( '.'+as_Ext, ls_Source, length ( ls_Source ) - 4 ) - ai_eraseBegin )+'.'+CST_EXTENSION_JPEG,[rfReplaceAll])
+             Else p_ReplaceLanguageString(astl_temp1,'SourcePoster','',[rfReplaceAll]);
+           if FileExistsUTF8(ls_FileWithoutExt+'.'+CST_EXTENSION_OGG)
+            Then p_ReplaceLanguageString(astl_temp1,'SourceOGG',copy ( ls_Source, ai_eraseBegin, PosEx ( '.'+as_Ext, ls_Source, length ( ls_Source ) - 4 ) - ai_eraseBegin )+'.'+CST_EXTENSION_OGG,[rfReplaceAll])
+            Else p_ReplaceLanguageString(astl_temp1,'SourceOGG','',[rfReplaceAll]);
+           if FileExistsUTF8(ls_FileWithoutExt+'.'+CST_EXTENSION_MP3)
+            Then p_ReplaceLanguageString(astl_temp1,'SourceMP3',copy ( ls_Source, ai_eraseBegin, PosEx ( '.'+as_Ext, ls_Source, length ( ls_Source ) - 4 ) - ai_eraseBegin )+'.'+CST_EXTENSION_MP3,[rfReplaceAll])
+            Else p_ReplaceLanguageString(astl_temp1,'SourceMP3','',[rfReplaceAll]);
+           if FileExistsUTF8(ls_FileWithoutExt+'.'+CST_EXTENSION_WMA)
+            Then p_ReplaceLanguageString(astl_temp1,'SourceWMA',copy ( ls_Source, ai_eraseBegin, PosEx ( '.'+as_Ext, ls_Source, length ( ls_Source ) - 4 ) - ai_eraseBegin )+'.'+CST_EXTENSION_WMA,[rfReplaceAll])
+            Else p_ReplaceLanguageString(astl_temp1,'SourceWMA','',[rfReplaceAll]);
+           p_ReplaceLanguageString(astl_temp1,'SourceArtist',as_artist,[rfReplaceAll]);
+           p_ReplaceLanguageString(astl_temp1,'SourceTitle',copy(ls_FileName,1,li_pos-1),[rfReplaceAll]);
            p_ReplaceLanguageString(astl_temp1,'Source',copy(ls_Source,ai_eraseBegin,length(ls_Source)-ai_eraseBegin+1),[rfReplaceAll]);
            p_ReplaceLanguageString(astl_temp1,'Type','audio/'+as_Ext,[rfReplaceAll]);
+           if not ab_first Then
+             astl_files.Add(',');
            astl_files.AddStrings(astl_temp1);
+           ab_first:=False;
          end;
 
     end;
@@ -241,16 +270,18 @@ begin
         if DirectoryExistsUTF8 ( ls_Source ) Then
           Begin
             p_addKeyWord(ls_FileName);
-            p_AddFiles ( ls_Source, astl_files, ai_eraseBegin, astl_temp1 );
+            if as_artist > '' Then
+              ls_FileName := as_artist + ' - ' + ls_FileName;
+            p_AddFiles ( ls_Source, ls_FileName, astl_files, ai_eraseBegin, astl_temp1, ab_first );
           End
         Else
           if FileExistsUTF8 ( ls_Source ) Then
             Begin
                ls_FileNameLower := LowerCase(ls_FileName);
                li_EndExt := Length(ls_FileName)-4;
-               p_addFile( ch_OGG.Checked, 'ogg' );
-               p_addFile( ch_MP3.Checked, 'mp3' );
-               p_addFile( ch_WMA.Checked, 'wma' );
+               p_addFile( ch_OGG.Checked, CST_EXTENSION_OGG );
+               p_addFile( ch_MP3.Checked, CST_EXTENSION_MP3 );
+               p_addFile( ch_WMA.Checked, CST_EXTENSION_WMA );
             End;
         lstl_temp2.Delete(0);
       End ;
@@ -337,6 +368,8 @@ begin
      Else Source := gs_Root + CST_SUBDIR_THEMES+cb_Themes.Text;
     Destination := gs_RootPathForExport;
     CopySourceToDestination;
+    Source := gs_Root + CST_SUBDIR_CLASSES;
+    CopySourceToDestination;
   finally
     FileOptions:=FileOptions+[cpDestinationIsFile];
    end;
@@ -419,7 +452,7 @@ var
   ls_destination: string;
   ls_Images: string;
   li_Count: integer;
-
+  lb_first : boolean;
 
 begin
   p_Setcomments (( gs_WebPlayer_Home )); // advert for user
@@ -428,8 +461,9 @@ begin
     p_ClearKeyWords;
     pb_ProgressInd.Progress := 0; // initing not needed user value
     lstl_Temp1:=TStringList.Create;
+    lb_first := True;
     try
-      p_AddFiles ( de_indexdir.Directory, lstl_HTMLHome, Length(de_indexdir.Directory)+2,lstl_Temp1);
+      p_AddFiles ( de_indexdir.Directory, '', lstl_HTMLHome, Length(de_indexdir.Directory)+2,lstl_Temp1, lb_first);
     finally
       lstl_Temp1.Free;
     end;
