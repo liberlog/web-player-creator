@@ -262,7 +262,9 @@ begin
   lstl_temp2 := TStringList.Create;
   try
    if fb_FindFiles ( lstl_temp2, as_Source, True, True, True, '*' ) Then
-    while lstl_temp2.count > 0 do
+    Begin
+     lstl_temp2.Sort;
+     while lstl_temp2.count > 0 do
       Begin
         ls_Source := lstl_temp2.Strings [ 0 ];
         FindFirstUTF8( ls_Source,faanyfile,lsr_AttrSource);
@@ -286,6 +288,7 @@ begin
             End;
         lstl_temp2.Delete(0);
       End ;
+    end;
   finally
     lstl_temp2.Free;
   end;
