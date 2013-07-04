@@ -2,11 +2,11 @@ object F_WebPlayer: TF_WebPlayer
   Left = 799
   Height = 419
   Top = 112
-  Width = 483
+  Width = 546
   BorderIcons = []
   Caption = 'WebPlayerCreator : Générer un Player audio Statique'
   ClientHeight = 419
-  ClientWidth = 483
+  ClientWidth = 546
   Color = clBtnFace
   DefaultMonitor = dmPrimary
   Font.Color = clWindowText
@@ -20,10 +20,10 @@ object F_WebPlayer: TF_WebPlayer
     Left = 0
     Height = 30
     Top = 389
-    Width = 483
+    Width = 546
     Align = alBottom
     ClientHeight = 30
-    ClientWidth = 483
+    ClientWidth = 546
     TabOrder = 0
     object pb_ProgressInd: TFlatGauge
       Left = 1
@@ -36,7 +36,7 @@ object F_WebPlayer: TF_WebPlayer
       Align = alLeft
     end
     object FWClose1: TFWClose
-      Left = 377
+      Left = 440
       Height = 25
       Top = 2
       Width = 98
@@ -53,7 +53,7 @@ object F_WebPlayer: TF_WebPlayer
       ParentColor = False
     end
     object bt_gen: TFWExport
-      Left = 287
+      Left = 350
       Height = 25
       Top = 2
       Width = 88
@@ -62,17 +62,27 @@ object F_WebPlayer: TF_WebPlayer
       Anchors = [akTop, akRight]
       OnClick = bt_genClick
     end
+    object bt_Unindex: TFWExport
+      Left = 251
+      Height = 25
+      Top = 1
+      Width = 96
+      Caption = 'Désindexer'
+      TabOrder = 2
+      Anchors = [akTop, akRight]
+      OnClick = bt_UnindexClick
+    end
   end
   object pa_options: TPanel
     Left = 0
     Height = 389
     Top = 0
-    Width = 483
+    Width = 546
     Align = alClient
     BevelOuter = bvNone
     Caption = 'I'
     ClientHeight = 389
-    ClientWidth = 483
+    ClientWidth = 546
     TabOrder = 1
     object Label2: TLabel
       Left = 4
@@ -86,7 +96,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 103
       Height = 22
       Top = 0
-      Width = 375
+      Width = 438
       Anchors = [akTop, akLeft, akRight]
       ParentColor = True
       TabOrder = 0
@@ -95,7 +105,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 4
       Height = 74
       Top = 64
-      Width = 474
+      Width = 537
       Anchors = [akTop, akLeft, akRight]
       ParentColor = True
       ScrollBars = ssAutoBoth
@@ -131,7 +141,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 103
       Height = 22
       Top = 24
-      Width = 375
+      Width = 438
       Anchors = [akTop, akLeft, akRight]
       ParentColor = True
       TabOrder = 3
@@ -149,7 +159,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 124
       Height = 22
       Top = 168
-      Width = 248
+      Width = 311
       ShowHidden = False
       ButtonWidth = 23
       NumGlyphs = 0
@@ -170,7 +180,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 95
       Height = 22
       Top = 264
-      Width = 358
+      Width = 421
       FilterIndex = 0
       HideDirectories = False
       ButtonWidth = 23
@@ -192,7 +202,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 95
       Height = 22
       Top = 296
-      Width = 358
+      Width = 421
       FilterIndex = 0
       HideDirectories = False
       ButtonWidth = 23
@@ -213,7 +223,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 93
       Height = 26
       Top = 232
-      Width = 384
+      Width = 447
       Anchors = [akTop, akLeft, akRight]
       Color = clBtnFace
       ItemHeight = 0
@@ -224,7 +234,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 3
       Height = 42
       Top = 344
-      Width = 475
+      Width = 538
       Anchors = [akTop, akLeft, akRight, akBottom]
       ParentColor = True
       ScrollBars = ssAutoBoth
@@ -261,7 +271,7 @@ object F_WebPlayer: TF_WebPlayer
       UseDockManager = False
     end
     object bt_see: TFWSearch
-      Left = 398
+      Left = 461
       Height = 25
       Top = 168
       Caption = 'Voir'
@@ -273,7 +283,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 93
       Height = 25
       Top = 206
-      Width = 385
+      Width = 448
       Anchors = [akTop, akLeft, akRight]
       Color = clBtnFace
       ItemHeight = 0
@@ -290,6 +300,15 @@ object F_WebPlayer: TF_WebPlayer
       ParentColor = False
       ParentShowHint = False
       ShowHint = True
+    end
+    object ch_IndexAll: TJvXPCheckbox
+      Left = 224
+      Height = 17
+      Top = 145
+      Width = 254
+      Caption = 'Indexer aussi les sous-répertoires'
+      TabOrder = 14
+      UseDockManager = False
     end
   end
   object ch_OGG: TJvXPCheckbox

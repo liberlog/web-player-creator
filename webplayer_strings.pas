@@ -10,8 +10,10 @@ uses
   Classes, SysUtils;
 
 resourcestring
+  gs_WebPlayer_Back = 'Retour' ;
   gs_WebPlayer_Delete_File = 'Effacer le fichier';
-  gs_WebPlayer_Delete_File_confirm = 'Confirmez-vous l''effacement du fichier @ARG ?';
+  gs_WebPlayer_Delete_Files_confirm_in_each_directory = ' et ses sous-répertoires';
+  gs_WebPlayer_Delete_Files_confirm = 'Confirmez-vous l''effacement de ces fichiers dans le répertoire @ARG@ARG : '+#10+'@ARG?';
   gs_WebPlayer_ErrorFiles = 'Erreur : Aucune source dans le répertoire ';
   gs_WebPlayer_ErrorThemes = 'Erreur : Aucun thème dans le répertoire ';
   gs_WebPlayer_ExportMoreThan5Chars =
