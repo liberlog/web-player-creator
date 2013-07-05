@@ -19,6 +19,7 @@ resourcestring
   gs_WebPlayer_ExportMoreThan5Chars =
     'Le chemin d''exportation web doit faire plus de 5 caractères.';
   gs_WebPlayer_Home = 'Accueil';
+  gs_WebPlayer_Downloads = 'Télécharger';
   gs_WebPlayer_Welcome = 'Bienvenue !';
   gs_WebPlayer_Phase = 'Étape : ' ;
   gs_WebPlayer_Finished = 'Fini' ;
