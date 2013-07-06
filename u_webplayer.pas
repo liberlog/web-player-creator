@@ -267,7 +267,6 @@ var li_EndExt : Integer ;
      Begin
        p_ReplaceLanguageString(astl_temp1,'Source',ls_Source,[rfReplaceAll]);
        p_ReplaceLanguageString(astl_temp1,'SourceTitle',copy(ls_FileName,1,li_pos-1),[rfReplaceAll]);
-       p_ReplaceLanguageString(astl_temp1,'SourceArtist',as_artist,[rfReplaceAll]);
        p_ReplaceLanguageString(astl_temp1,'Type','audio/'+as_Ext,[rfReplaceAll]);
      end;
 
@@ -290,6 +289,9 @@ var li_EndExt : Integer ;
             Begin
               p_LoadStringList ( astl_temp1,  CST_DOWNLOAD_FILE+CST_EXTENSION_HTML );
               p_replaceAllCase;
+              if as_artist > ''
+               Then p_ReplaceLanguageString(astl_temp1,'SourceArtist',' - '+as_artist,[rfReplaceAll])
+               Else p_ReplaceLanguageString(astl_temp1,'SourceArtist','',[rfReplaceAll]);
               astl_downloads.AddStrings(astl_temp1);
             end;
            p_LoadStringList ( astl_temp1,  CST_INDEX_FILE+CST_EXTENSION_HTML );
@@ -330,6 +332,7 @@ var li_EndExt : Integer ;
             Then p_ReplaceLanguageString(astl_temp1,'SourceWMA',ls_SourceNoExt +'.'+CST_EXTENSION_WMA,[rfReplaceAll])
             Else p_ReplaceLanguageString(astl_temp1,'SourceWMA','',[rfReplaceAll]);
            p_replaceAllCase;
+           p_ReplaceLanguageString(astl_temp1,'SourceArtist',as_artist,[rfReplaceAll]);
            if not ab_first Then
              astl_files.Add(',');
            astl_files.AddStrings(astl_temp1);
