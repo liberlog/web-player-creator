@@ -170,7 +170,7 @@ type
       const as_Subdir: string = '';
       const as_ExtFile: string = CST_EXTENSION_HTML;
       const as_BeforeHTML: string = ''; const astl_Body : TStringList = nil );
-    procedure p_genHtmlHome ( const as_directory, as_subdirForward : String;
+    procedure p_genHtmlHome ( const as_directory, as_subdirForward, as_artist : String;
                               const ab_Root : Boolean );
     function  p_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
     procedure p_IncProgressInd;
@@ -369,7 +369,7 @@ begin
             and ( ai_Level = 1 ) // p_genHtmlHome will recall this recursive function
             and ch_IndexAll.Checked Then
              Begin
-              p_genHtmlHome ( ls_Source + DirectorySeparator, as_subdirForward+'../', False );
+              p_genHtmlHome ( ls_Source + DirectorySeparator, as_subdirForward+'../', ls_FileName, False );
               astl_DirListAudio.Add(ls_Source);
              end;
           End
@@ -496,7 +496,7 @@ begin
     p_CreateKeyWords;
     gb_Generate := True;
     pb_Progress.Progress := 0;
-    p_genHtmlHome ( gs_RootPathForExport, '', ch_convert.Checked );
+    p_genHtmlHome ( gs_RootPathForExport, '', '', ch_convert.Checked );
   finally
     pa_options.Enabled:=True;
     gb_Generate := False;
@@ -696,7 +696,7 @@ End;
 
 // procedure TF_WebPlayer.p_genHtmlHome
 // Default HTML page
-procedure TF_WebPlayer.p_genHtmlHome ( const as_directory, as_subdirForward : String;
+procedure TF_WebPlayer.p_genHtmlHome ( const as_directory, as_subdirForward, as_artist : String;
                                        const ab_Root : Boolean );
 var
   lstl_Temp1,
@@ -745,7 +745,7 @@ begin
     li_PathToDelete := Length(as_directory)+1;
     try
       lb_foundaudio := False;
-      p_AddFiles ( as_directory, '', as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownload, lstl_processes, lb_first, lb_foundaudio, ab_Root );
+      p_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownload, lstl_processes, lb_first, lb_foundaudio, ab_Root );
     finally
       lstl_Temp1.Free;
     end;
