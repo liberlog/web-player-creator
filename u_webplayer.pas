@@ -364,13 +364,13 @@ begin
               ls_FileName := as_artist + ' - ' + ls_FileName;
             if ( ai_Level = 1 ) Then
               ab_foundAudio:=False;
-            p_AddFiles ( ls_Source+DirectorySeparator, ls_FileName, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_Processes, ab_first, ab_foundAudio, ab_Root );
+            p_AddFiles ( ls_Source, ls_FileName, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_Processes, ab_first, ab_foundAudio, ab_Root );
             if  ab_foundAudio
+            and ( ai_Level = 1 ) // p_genHtmlHome will recall this recursive function
             and ch_IndexAll.Checked Then
              Begin
               p_genHtmlHome ( ls_Source + DirectorySeparator, as_subdirForward+'../', False );
-              if ai_Level = 1 Then
-                astl_DirListAudio.Add(ls_Source);
+              astl_DirListAudio.Add(ls_Source);
              end;
           End
         Else
