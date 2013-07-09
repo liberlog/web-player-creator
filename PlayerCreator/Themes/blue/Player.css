@@ -1,3 +1,40 @@
+/* Matthieu GIROUX
+    LIBERLOG */
+body
+{
+ background-color:#112233;
+}
+div#menu ul li {
+ float:left;
+ }
+div#menu ul,div#DirList ul {
+ padding:0;
+ margin:0;
+ list-style-type:none;
+ }
+div#menu li,div#DirList li {
+ margin-left:2px;
+ height : 32px;
+
+ }
+p#menu a {  
+ background-color:#332244;
+}
+div#menu ul li a,div#DirList ul li a {  
+ color:#AABBDD;
+ background-color:#332244;
+ text-decoration:none;
+ text-align:center;
+ padding:5px;
+ border:2px solid;
+ /*pour avoir un effet "outset" avec IE :*/
+ border-color:#444469 #5555DC #6666DC #555569;
+ }
+div#menu ul li a:hover,div#DirList ul li a:hover {
+ background-color:#5544D3;
+ border-color:#444469 #5555DC #6666DC #555569;
+ } 
+
 /*
  * Skin for jPlayer Plugin (jQuery JavaScript Library)
  * http://www.jplayer.org
