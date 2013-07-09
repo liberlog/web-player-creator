@@ -64,12 +64,13 @@ const
                                              FileUnit : 'U_WebPlayer' ;
                                              Owner : 'Matthieu Giroux' ;
                                              Comment : 'Créateur de player HTNL statique.' ;
-                                             BugsStory : '1.0.2.0 : Directory view.' + 1#13#10
+                                             BugsStory : '1.0.3.0 : HTML Images.' + 1#13#10
+                                                       + '1.0.2.0 : Directory view.' + 1#13#10
                                                        + '1.0.1.0 : File sorting.' + 1#13#10
                                                        + '1.0.0.0 : Jquery playlist version.' + 1#13#10
                                                        + '0.9.9.0 : First published version'  ;
                                              UnitType : CST_TYPE_UNITE_APPLI ;
-                                             Major : 1 ; Minor : 0 ; Release : 2 ; Build : 0 );
+                                             Major : 1 ; Minor : 0 ; Release : 3 ; Build : 0 );
 {$ENDIF}
 
 const CST_WebPlayer = 'PlayerCreator' ;
@@ -335,7 +336,7 @@ var li_EndExt : Integer ;
            //ShowMessage(as_Source+CST_EXTENSION_PNG+ls_SourceMini +CST_EXTENSION_JPEG+as_Source+DirectorySeparator+as_parent +CST_EXTENSION_JPEG);
            if not fb_ReplaceImg (ls_FileWithoutExt)
             Then if not fb_ReplaceImg (as_Source)
-             Then if not fb_ReplaceImg(as_Source+ExtractDirName (as_Source ))
+             Then if not fb_ReplaceImg(as_Source+DirectorySeparator+ExtractDirName (as_Source ))
               Then
                Begin
                 p_ReplaceLanguageString(astl_temp1,'SourcePoster','',[rfReplaceAll]);
@@ -405,7 +406,7 @@ begin
              Else ls_SourceMini := '';
             if ( ai_Level = 1 ) Then
               ab_foundAudio:=False;
-            p_AddFiles ( ls_Source+DirectorySeparator, ls_SourceMini, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_Processes, ab_first, ab_foundAudio, ab_Root );
+            p_AddFiles ( ls_Source, ls_SourceMini, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_Processes, ab_first, ab_foundAudio, ab_Root );
             if  ab_foundAudio
             and ( ai_Level = 1 ) // p_genHtmlHome will recall this recursive function
             and ch_IndexAll.Checked Then
