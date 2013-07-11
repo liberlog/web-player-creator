@@ -843,6 +843,7 @@ begin
      End
     Else
      p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd','',[rfReplaceAll]);
+    p_ReplaceLanguageString(lstl_HTMLBody,'Describe',fs_Format_Lines(me_Description.Text ));
     lstl_HTMLHome.AddStrings(lstl_HTMLBody);
     lstl_HTMLBody.Clear;
     p_CreateAHtmlFile(lstl_HTMLHome, CST_INDEX, me_Description.Lines.Text,

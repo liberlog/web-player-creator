@@ -34,7 +34,9 @@ div#menu ul li a:hover,div#DirList ul li a:hover {
  background-color:#5544D3;
  border-color:#444469 #5555DC #6666DC #555569;
  } 
-
+span#Describe {
+color:#AABBDD;
+ }
 /*
  * Skin for jPlayer Plugin (jQuery JavaScript Library)
  * http://www.jplayer.org
