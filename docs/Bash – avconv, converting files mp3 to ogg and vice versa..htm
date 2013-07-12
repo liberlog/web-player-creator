@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="" charset="UTF-8">
+	<meta name="description" content="Converting files mp3 to ogg and vice versa by using the avconv tool in terminal.">
+	<meta name="keywords" content="bash, ogg to mp3, converting audio, avconv, ffmpeg, script in bash, linux">
+	<meta name="author" content="lis.la@wp.pl">
+	<title>Bash – avconv, converting files mp3 to ogg and vice versa.</title>
+	
+	<link rel="Stylesheet" type="text/css" media="screen" href="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/lekka.css">
+	<link rel="Stylesheet" type="text/css" media="screen" href="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/lekka_code.css">
+	<link rel="Stylesheet" type="text/css" media="screen" href="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/icons.css">
+<!--]>--><style type="text/css">div#reklamacba { display: block !important; text-align: center; height: auto; top: 0 !important; position: relative !important; z-index: 10000 !important }</style>
+<script src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/be-init.js" type="text/javascript"></script></head><body><div id="reklamacba" align="center"><script type="text/javascript" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/adexon.js"></script><script type="text/javascript">
+// <![CDATA[
+document.write('<scr'+'ipt type="text/javascript" src="http://ad.360yield.com/nadj?pub=291&placement=cba01&size=750x200&kw='+BETags+'&tz='+(new Date().getTimezoneOffset())+'"><\/scr'+'ipt>');
+// ]]>
+</script><script type="text/javascript" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/nadj"></script>
+<noscript>
+<a target="_blank" href="http://ad.360yield.com/jump?pub=291&amp;placement=cba01&amp;size=750x200">
+  <img border="0" alt="" width="750" height="200" src="http://ad.360yield.com/nad?pub=291&amp;placement=cba01&amp;size=750x200"/>
+</a>
+</noscript></div>
+
+
+
+<div id="container">
+	<header id="topPanel">
+		<a class="sectionGeneral" href="http://lekka.cba.pl/index_eng.htm">Home page</a>
+		<a class="sectionTop" href="http://lekka.cba.pl/software/ubuntu/ubuntu.htm">Ubuntu</a>
+		
+		<a href="http://lekka.cba.pl/c++/c++.htm">C++</a>
+		<a href="http://lekka.cba.pl/hardware/hardware.htm">Hardware</a>
+		<a href="http://lekka.cba.pl/htm_java/htm_jsc.htm">HTML i javascript</a>
+		<a href="http://lekka.cba.pl/java/java.htm">Java</a>
+		<a href="http://lekka.cba.pl/software/software.htm">Software</a>
+		<a href="http://lekka.cba.pl/SQL/sql.htm">SQL</a>
+
+		<span id="language"><a href="#" class="flag"><img src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/flag_united_kingdom.png" alt="flag_united_kingdom"></a><a href="http://lekka.cba.pl/software/ubuntu/linux_bash_avconv_mp32ogg.htm" class="flag"><img class="notSelected" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/flag_poland.png" alt="flag_poland"></a></span>
+	</header>
+	<article id="centerPanel">
+		<div id="topic">
+			<h1>Bash – avconv, converting files mp3 to ogg and vice versa.</h1>
+			<span>Added: 2012-06-16</span>
+		</div>
+		
+<div id="text">
+<p>Are many programs to conversion file audio and video, good tool for terminal is <strong>avconv</strong>, in past of <b>ffmpeg</b>. Documentation of <a href="http://libav.org/documentation.html">avconv</a>.</p>
+
+<p>If you want to use <strong>avconv</strong>, and you do not have it in system, install it by typing command:</p> 
+<code class="samples">sudo apt-get install avconv</code>
+
+<p>In case of conversion ogg to mp3, you can have problem with not 
+existing codecs. These codecs are not installed by default because, they
+ have not compatible license with <a href="http://www.ubuntu.com/project/about-ubuntu">Ubuntu License Policy</a>. On this page <a href="https://help.ubuntu.com/community/RestrictedFormats">restricted formats</a>, you can read, why that packages are not installed default.</p>
+
+<p>You can install that package by typing command:</p> 
+<code class="samples">sudo apt-get install ubuntu-restricted-extras</code>
+
+<p>Below is script, who performs the conversion of files mp3 to ogg and 
+vice versa. Script must be in folder where are files to convert. The 
+script requires a single parameter.</p>
+
+<p><a href="http://lekka.cba.pl/software/ubuntu/linux_bash_avconv_mp32ogg_eng.htm#idNotExist" id="PRINT"><img title="print" alt="drukowanie kodu" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/print-icon_no_commercial.png"></a>
+<a href="http://lekka.cba.pl/software/ubuntu/linux_bash_avconv_mp32ogg_eng.htm#idNotExist" id="SELECT"><img title="select" alt="zaznaczanie kodu" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/code_select_no_commercial.png"></a></p>
+<pre id="SAM01"><code class="samples">#!/bin/bash
+
+echo "The script convert mp3-&gt;ogg or ogg-&gt;mp3.";
+echo "The script takes one parameter: ";
+echo "[mp3ogg] - converting mp3-&gt;ogg";
+echo "[oggmp3] - converting ogg-&gt;mp3";
+
+
+if [ "$1" = "" ]; then
+	echo "";
+	echo "Argument does not exist!!!";
+	exit 102;
+fi
+
+
+if [ "$1" = "mp3ogg" ]; then
+	for file in *.mp3; do
+		 avconv -i "$file" "`echo ${file%.mp3}.ogg`";
+	done
+	exit 0;
+fi
+
+if [ "$1" = "oggmp3" ]; then
+	for file in *.ogg; do
+		 avconv -i "$file" -acodec libmp3lame "`echo ${file%.ogg}.mp3`";
+	done
+	exit 0;
+fi
+
+
+exit 104;</code></pre>
+</div>
+	</article>
+</div>
+
+
+<script type="text/javascript" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/jsJobToAllPage.js"></script>
+<script type="text/javascript" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/codeSamples.js"></script>
+<script type="text/javascript" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/jsEvent.js"></script>
+<script type="text/javascript" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/jsAddFlagsOfCountries.js"></script>
+<script type="text/javascript">
+<!--
+
+function selectSAM01(){
+	selectCode("pre", "SAM01", 0);
+}
+
+function printSAM01(){
+	printObject("SAM01", "page_name098909");
+}
+
+addEventListner("click", selectSAM01, "SELECT");
+addEventListner("click", printSAM01, "PRINT");
+addFlagsOfCountries(document.location.pathname, "language", "../../image/");
+doTheModifications();
+
+//-->
+</script>
+<!--]--><div style="text-align:center;font-size:11px" class="cbalink"><a href="http://www.cba.pl/" title="darmowy hosting">Darmowy Hosting</a> CBA.PL<br><br></div>
+<script src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/urchin.js" type="text/javascript"></script>
+<script type="text/javascript">
+_uacct = "UA-2289508-3";
+urchinTracker();
+</script>
+<script type="text/javascript" src="Bash%20%E2%80%93%20avconv,%20converting%20files%20mp3%20to%20ogg%20and%20vice%20versa._fichiers/r1.js"></script>
+
+
+
+</body></html>
+<!-- cba </body><!-->
