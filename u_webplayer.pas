@@ -37,6 +37,7 @@ uses
 {$IFNDEF FPC}
   Mask,  rxToolEdit, JvExControls,
 {$ELSE}
+  lazutf8classes,
   LCLIntf, LCLType, EditBtn,FileUtil,
 {$ENDIF}
   fonctions_string,
@@ -160,13 +161,13 @@ type
   private
     { Déclarations privées }
     procedure DoAfterInit(const ab_Ini: Boolean=True);
-    function fb_DeleteOrNot(const as_ThemaSource : String; astl_ListFiles: TStringList): Boolean;
-    function fstl_CreateListToDelete ( const as_ThemaSource : String ): TStringList;
+    function fb_DeleteOrNot(const as_ThemaSource : String; astl_ListFiles: TStrings): Boolean;
+    function fstl_CreateListToDelete ( const as_ThemaSource : String ): TStringListUTF8;
     procedure p_AddFiles ( const as_Source, as_artist, as_subdirForward : String ;
-                           const astl_files : TStringList;
+                           const astl_files : TStrings;
                            const ai_eraseBegin, ai_Level : Integer;
                            const astl_DirListAudio, astl_temp1,
-                                 astl_downloads , astl_Processes : TStringList;
+                                 astl_downloads , astl_Processes : TStrings;
                            var   ab_first, ab_foundAudio : Boolean;
                            const ab_Root : Boolean );
     procedure p_AddToCombo(const acb_combo: TComboBox; const as_Base: String;
@@ -175,14 +176,14 @@ type
       const as_BeginingFile, as_Describe, as_Title, as_LittleTitle, as_LongTitle: string;
       const as_Subdir: string = '';
       const as_ExtFile: string = CST_EXTENSION_HTML;
-      const as_BeforeHTML: string = ''; const astl_Body : TStringList = nil );
+      const as_BeforeHTML: string = ''; const astl_Body : TStrings = nil );
     procedure p_genHtmlHome ( const as_directory, as_subdirForward, as_artist : String;
                               const ab_Root : Boolean );
     function  p_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
     procedure p_IncProgressInd;
     procedure p_Setcomments(const as_Comment: String);
     procedure p_Unfat(const as_directory: String);
-    procedure p_Unindex(const as_directory: String;const astl_List1ToUnindex : TStringList);
+    procedure p_Unindex(const as_directory: String;const astl_List1ToUnindex : TStrings);
   public
     { Déclarations publiques }
   end;
@@ -197,10 +198,10 @@ implementation
 
 uses  fonctions_init,
   functions_html_tree,
-{$IFNDEF FPC}
-  webplayer_strings_delphi,
-{$ELSE}
+{$IFDEF FPC}
   webplayer_strings, strutils,
+{$ELSE}
+  webplayer_strings_delphi,
 {$ENDIF}
 {$IFDEF WIN32}
 //  windirs,
@@ -251,10 +252,10 @@ end;
 const CST_CONVERTED = '-converted';
 
 procedure TF_WebPlayer.p_AddFiles ( const as_Source, as_artist, as_subdirForward : String ;
-                                    const astl_files : TStringList;
+                                    const astl_files : TStrings;
                                     const ai_eraseBegin, ai_Level : Integer;
                                     const astl_DirListAudio, astl_temp1,
-                                          astl_downloads, astl_Processes : TStringList;
+                                          astl_downloads, astl_Processes : TStrings;
                                     var   ab_first, ab_foundAudio : Boolean;
                                     const ab_Root : Boolean );
 var li_EndExt : Integer ;
@@ -265,7 +266,7 @@ var li_EndExt : Integer ;
     ls_destination  : String;
     lsr_AttrSource      : Tsearchrec;
     lb_first : Boolean;
-    lstl_temp2 : TStringList ;
+    lstl_temp2 : TStringListUTF8 ;
     procedure p_addFile( const ab_add : Boolean; const as_Ext : String );
     var ls_FileWithoutExt : String;
         li_pos : Integer;
@@ -287,7 +288,7 @@ var li_EndExt : Integer ;
        Then
         Begin
          {$IFDEF WINDOWS}
-         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(as_image+CST_EXTENSION_PNG,DirectorySeparator,'/'),[rfReplaceAll]);
+         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(fs_MiniPath (as_image)+CST_EXTENSION_PNG,DirectorySeparator,'/'),[rfReplaceAll]);
          {$ELSE}
          p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image)+CST_EXTENSION_PNG,[rfReplaceAll]);
          {$ENDIF}
@@ -298,7 +299,7 @@ var li_EndExt : Integer ;
        Then
         Begin
          {$IFDEF WINDOWS}
-         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(as_image+CST_EXTENSION_JPEG,DirectorySeparator,'/'),[rfReplaceAll]);
+         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(fs_MiniPath (as_image)+CST_EXTENSION_JPEG,DirectorySeparator,'/'),[rfReplaceAll]);
          {$ELSE}
          p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image) +CST_EXTENSION_JPEG,[rfReplaceAll]);
          {$ENDIF}
@@ -308,7 +309,7 @@ var li_EndExt : Integer ;
       if Result
        Then
         {$IFDEF WINDOWS}
-        p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(as_image+CST_EXTENSION_GIF,DirectorySeparator,'/'),[rfReplaceAll]);
+        p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(fs_MiniPath (as_image)+CST_EXTENSION_GIF,DirectorySeparator,'/'),[rfReplaceAll]);
         {$ELSE}
         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image)+CST_EXTENSION_GIF,[rfReplaceAll]);
         {$ENDIF}
@@ -390,7 +391,7 @@ var li_EndExt : Integer ;
 
 begin
   astl_temp1.Clear ;
-  lstl_temp2 := TStringList.Create;
+  lstl_temp2 := TStringListUTF8.Create;
   try
    if fb_FindFiles ( lstl_temp2, as_Source, True, True, True, '*' ) Then
     Begin
@@ -568,7 +569,7 @@ begin
   p_OpenFileOrDirectory(de_indexdir.Directory);
 end;
 
-function TF_WebPlayer.fb_DeleteOrNot (  const as_ThemaSource : String; astl_ListFiles : TStringList ):Boolean;
+function TF_WebPlayer.fb_DeleteOrNot (  const as_ThemaSource : String; astl_ListFiles : TStrings ):Boolean;
 var ls_ToAdd : String;
     lb_DestroyList : boolean;
 begin
@@ -594,11 +595,11 @@ begin
 
 end;
 
-function TF_WebPlayer.fstl_CreateListToDelete ( const as_ThemaSource : String ): TStringList ;
-var lstl_List2 : TStringList;
+function TF_WebPlayer.fstl_CreateListToDelete ( const as_ThemaSource : String ): TStringListUTF8 ;
+var lstl_List2 : TStringListUTF8;
 Begin
-  Result     := TStringList.Create;
-  lstl_List2 := TStringList.Create;
+  Result     := TStringListUTF8.Create;
+  lstl_List2 := TStringListUTF8.Create;
   try
    fb_FindFiles(Result,gs_Root+CST_SUBDIR_CLASSES,True,False);
    fb_FindFiles(lstl_List2,as_ThemaSource,True,False);
@@ -613,7 +614,7 @@ Begin
 end;
 
 procedure TF_WebPlayer.bt_UnindexClick(Sender: TObject);
-var lstl_List : TStringList;
+var lstl_List : TStringListUTF8;
     ls_ThemaSource : String;
 begin
   if gb_Generate then
@@ -630,10 +631,10 @@ begin
   end;
 end;
 
-procedure TF_WebPlayer.p_Unindex(const as_directory : String;const astl_List1ToUnindex : TStringList);
-var lstl_FilesToVerify : TStringList;
+procedure TF_WebPlayer.p_Unindex(const as_directory : String;const astl_List1ToUnindex : TStrings);
+var lstl_FilesToVerify : TStringListUTF8;
 begin
-  lstl_FilesToVerify := TStringList.Create;
+  lstl_FilesToVerify := TStringListUTF8.Create;
   try
     fb_FindFiles(lstl_FilesToVerify,as_directory,True,True,False);
     while lstl_FilesToVerify.Count>0 do
@@ -656,9 +657,9 @@ begin
 end;
 
 procedure TF_WebPlayer.p_Unfat(const as_directory : String);
-var lstl_FilesToVerify : TStringList;
+var lstl_FilesToVerify : TStringListUTF8;
 begin
-  lstl_FilesToVerify := TStringList.Create;
+  lstl_FilesToVerify := TStringListUTF8.Create;
   try
     fb_FindFiles(lstl_FilesToVerify,as_directory,True,True,False);
     while lstl_FilesToVerify.Count>0 do
@@ -730,7 +731,7 @@ begin
 end;
 
 
-procedure p_saveFile ( const astl_HTML : TStringList; const as_Phase, as_filePath : String );
+procedure p_saveFile ( const astl_HTML : TStrings; const as_Phase, as_filePath : String );
 Begin
   p_SaveStrings(astl_HTML,as_filePath,as_Phase + #13#10 + #13#10 + fs_getCorrectString ( gs_WebPlayer_cantCreateHere ) + as_filePath );
 End;
@@ -742,7 +743,7 @@ procedure TF_WebPlayer.p_genHtmlHome ( const as_directory, as_subdirForward, as_
 var
   lstl_Temp1,
   lstl_HTMLHome,lstl_HTMLBody,lstl_HTMLDownload,
-  lstl_DirList,lstl_DirLine,lstl_ListDirAudio, lstl_processes : TStringList;
+  lstl_DirList,lstl_DirLine,lstl_ListDirAudio, lstl_processes : TStringListUTF8;
   ls_destination: string;
   ls_Images: string;
   li_Count, li_PathToDelete: integer;
@@ -763,13 +764,13 @@ var
   End;
 begin
   p_Setcomments (( gs_WebPlayer_Home )); // advert for user
-  lstl_HTMLHome     := TStringList.Create;
-  lstl_HTMLBody     := TStringList.Create;
-  lstl_ListDirAudio := TStringList.Create;
-  lstl_processes    := TStringList.Create;
+  lstl_HTMLHome     := TStringListUTF8.Create;
+  lstl_HTMLBody     := TStringListUTF8.Create;
+  lstl_ListDirAudio := TStringListUTF8.Create;
+  lstl_processes    := TStringListUTF8.Create;
   if ch_downloads.Checked Then
    Begin
-    lstl_HTMLDownload := TStringList.Create;
+    lstl_HTMLDownload := TStringListUTF8.Create;
     p_LoadStringList ( lstl_HTMLBody, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
     p_ReplaceLanguageString(lstl_HTMLBody,'Link',ed_IndexName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
     p_ReplaceLanguageString(lstl_HTMLBody,'Caption',gs_WebPlayer_Back,[rfReplaceAll]);
@@ -777,11 +778,11 @@ begin
     lstl_HTMLBody.clear;
    end;
   if ab_Root Then
-   lstl_processes := TStringList.Create;
+   lstl_processes := TStringListUTF8.Create;
   try
     p_ClearKeyWords;
     pb_Progress.Progress := 0; // initing not needed user value
-    lstl_Temp1:=TStringList.Create;
+    lstl_Temp1:=TStringListUTF8.Create;
     lb_first := True;
     li_PathToDelete := Length(as_directory)+1;
     try
@@ -793,8 +794,8 @@ begin
     p_LoadStringList ( lstl_HTMLBody, CST_INDEX_BODY+CST_EXTENSION_HTML );
     if lstl_ListDirAudio.Count>0 Then
       Begin
-       lstl_DirList := TStringList.Create;
-       lstl_DirLine := TStringList.Create;
+       lstl_DirList := TStringListUTF8.Create;
+       lstl_DirLine := TStringListUTF8.Create;
         try
           while lstl_ListDirAudio.Count > 0  do
            Begin
@@ -811,7 +812,7 @@ begin
             lstl_ListDirAudio.Delete(0);
            end;
 
-          p_ReplaceLanguageString(lstl_HTMLBody,'DirList','<ul>'+StringReplace(StringReplace(lstl_DirList.Text,'"','\"',[rfReplaceAll]),#10,'\n',[rfReplaceAll])+'</ul>',[rfReplaceAll]);
+          p_ReplaceLanguageString(lstl_HTMLBody,'DirList','<ul>'+StringReplace(fs_ReplaceEndOfLines (lstl_DirList),'"','\"',[rfReplaceAll])+'</ul>',[rfReplaceAll]);
         finally
           lstl_DirList.Free;
           lstl_DirLine.Free;
@@ -897,7 +898,7 @@ procedure TF_WebPlayer.p_CreateAHtmlFile(const astl_Destination: TStrings;
   const as_Subdir: string = '';
   const as_ExtFile: string =
   CST_EXTENSION_HTML;
-  const as_BeforeHTML: string = ''; const astl_Body : TStringList = nil );
+  const as_BeforeHTML: string = ''; const astl_Body : TStrings = nil );
 begin
   if not assigned ( gstl_HeadKeyWords ) Then
     Abort;       // can quit while creating
