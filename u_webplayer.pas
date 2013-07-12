@@ -275,6 +275,11 @@ var li_EndExt : Integer ;
        p_ReplaceLanguageString(astl_temp1,'SourceTitle',copy(ls_FileName,1,li_pos-1),[rfReplaceAll]);
        p_ReplaceLanguageString(astl_temp1,'Type','audio/'+as_Ext,[rfReplaceAll]);
      end;
+    function fs_MiniPath ( const as_path : String ) : String;
+    Begin
+      Result := copy ( as_path, ai_eraseBegin, length ( as_path ) - ai_eraseBegin + 1 );
+    end;
+
     function fb_ReplaceImg ( const as_image : String ) : Boolean;
     Begin
       Result := FileExistsUTF8(as_image+CST_EXTENSION_PNG);
@@ -284,7 +289,7 @@ var li_EndExt : Integer ;
          {$IFDEF WINDOWS}
          p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(as_image+CST_EXTENSION_PNG,DirectorySeparator,'/'),[rfReplaceAll]);
          {$ELSE}
-         p_ReplaceLanguageString(astl_temp1,'SourcePoster',as_image+CST_EXTENSION_PNG,[rfReplaceAll]);
+         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image)+CST_EXTENSION_PNG,[rfReplaceAll]);
          {$ENDIF}
          Exit
         end;
@@ -295,7 +300,7 @@ var li_EndExt : Integer ;
          {$IFDEF WINDOWS}
          p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(as_image+CST_EXTENSION_JPEG,DirectorySeparator,'/'),[rfReplaceAll]);
          {$ELSE}
-         p_ReplaceLanguageString(astl_temp1,'SourcePoster',as_image +CST_EXTENSION_JPEG,[rfReplaceAll]);
+         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image) +CST_EXTENSION_JPEG,[rfReplaceAll]);
          {$ENDIF}
           Exit;
         end;
@@ -305,7 +310,7 @@ var li_EndExt : Integer ;
         {$IFDEF WINDOWS}
         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(as_image+CST_EXTENSION_GIF,DirectorySeparator,'/'),[rfReplaceAll]);
         {$ELSE}
-        p_ReplaceLanguageString(astl_temp1,'SourcePoster',as_image+CST_EXTENSION_GIF,[rfReplaceAll]);
+        p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image)+CST_EXTENSION_GIF,[rfReplaceAll]);
         {$ENDIF}
     End;
 
