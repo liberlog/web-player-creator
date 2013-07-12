@@ -732,15 +732,7 @@ end;
 
 procedure p_saveFile ( const astl_HTML : TStringList; const as_Phase, as_filePath : String );
 Begin
-  try
-    astl_HTML.SaveToFile(as_filePath);
-  except
-    On E: Exception do
-    begin
-      ShowMessage(as_Phase + #13#10 + #13#10 + fs_getCorrectString ( gs_WebPlayer_cantCreateHere ) + as_filePath + CST_ENDOFLINE + E.Message);
-      Abort;
-    end;
-  end;
+  p_SaveStrings(astl_HTML,as_filePath,as_Phase + #13#10 + #13#10 + fs_getCorrectString ( gs_WebPlayer_cantCreateHere ) + as_filePath );
 End;
 
 // procedure TF_WebPlayer.p_genHtmlHome
@@ -832,7 +824,7 @@ begin
        p_CreateAHtmlFile(lstl_HTMLDownload, CST_DOWNLOAD, me_Description.Lines.Text,
           gs_WebPlayer_Downloads , gs_WebPlayer_Downloads, '', '');
        p_ReplaceLanguageString(lstl_HTMLDownload,'SubDir',as_subdirForward,[rfReplaceAll]);
-       p_saveFile(lstl_HTMLDownload,gs_WebPlayer_Phase + ' - ' + gs_WebPlayer_Downloads,as_directory + ed_DownLoadName.Text + CST_EXTENSION_HTML);
+       p_saveFile(lstl_HTMLDownload,gs_WebPlayer_Phase + gs_WebPlayer_Downloads,as_directory + ed_DownLoadName.Text + CST_EXTENSION_HTML);
        p_LoadStringList ( lstl_HTMLDownload, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
        p_ReplaceLanguageString(lstl_HTMLDownload,'Link',ed_DownLoadName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
        p_ReplaceLanguageString(lstl_HTMLDownload,'Caption',gs_WebPlayer_Downloads,[rfReplaceAll]);
