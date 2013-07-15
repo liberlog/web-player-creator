@@ -15,7 +15,7 @@ object F_WebPlayer: TF_WebPlayer
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.0.6.0'
+  LCLVersion = '1.0.10.0'
   object spSkinPanel1: TPanel
     Left = 0
     Height = 52
@@ -46,9 +46,9 @@ object F_WebPlayer: TF_WebPlayer
     end
     object lb_Comments: TLabel
       Left = 147
-      Height = 17
+      Height = 15
       Top = 10
-      Width = 71
+      Width = 69
       Caption = 'Bienvenue !'
       ParentColor = False
     end
@@ -96,15 +96,15 @@ object F_WebPlayer: TF_WebPlayer
     TabOrder = 1
     object Label2: TLabel
       Left = 4
-      Height = 17
+      Height = 15
       Top = 5
-      Width = 45
+      Width = 47
       Caption = 'Auteur :'
       ParentColor = False
     end
     object ed_Author: TEdit
       Left = 103
-      Height = 24
+      Height = 22
       Top = 0
       Width = 438
       Anchors = [akTop, akLeft, akRight]
@@ -123,17 +123,17 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label3: TLabel
       Left = 4
-      Height = 17
+      Height = 15
       Top = 48
-      Width = 75
+      Width = 72
       Caption = 'Description :'
       ParentColor = False
     end
     object lb_Images: TLabel
       Left = 8
-      Height = 17
+      Height = 15
       Top = 185
-      Width = 112
+      Width = 109
       Caption = 'Dossier à indexer :'
       ParentColor = False
     end
@@ -149,7 +149,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object ed_IndexName: TEdit
       Left = 103
-      Height = 24
+      Height = 22
       Top = 24
       Width = 169
       ParentColor = True
@@ -158,7 +158,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label10: TLabel
       Left = 4
-      Height = 17
+      Height = 15
       Top = 29
       Width = 92
       Caption = 'Nom du fichier :'
@@ -166,7 +166,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object de_indexdir: TDirectoryEdit
       Left = 124
-      Height = 24
+      Height = 22
       Top = 182
       Width = 311
       ShowHidden = False
@@ -187,7 +187,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object fne_import: TFileNameEdit
       Left = 95
-      Height = 24
+      Height = 22
       Top = 275
       Width = 421
       FilterIndex = 0
@@ -201,15 +201,15 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label11: TLabel
       Left = 7
-      Height = 17
+      Height = 15
       Top = 282
-      Width = 56
+      Width = 58
       Caption = 'Importer :'
       ParentColor = False
     end
     object fne_export: TFileNameEdit
       Left = 95
-      Height = 24
+      Height = 22
       Top = 299
       Width = 421
       FilterIndex = 0
@@ -222,20 +222,20 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label44: TLabel
       Left = 7
-      Height = 17
+      Height = 15
       Top = 240
-      Width = 57
+      Width = 54
       Caption = 'Sources :'
       ParentColor = False
     end
     object cb_Files: TComboBox
       Left = 93
-      Height = 30
+      Height = 26
       Top = 232
       Width = 447
       Anchors = [akTop, akLeft, akRight]
       Color = clBtnFace
-      ItemHeight = 16
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 8
     end
@@ -251,9 +251,9 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label6: TLabel
       Left = 3
-      Height = 17
+      Height = 15
       Top = 328
-      Width = 151
+      Width = 142
       Caption = 'En bas de chaque page :'
       ParentColor = False
     end
@@ -290,21 +290,21 @@ object F_WebPlayer: TF_WebPlayer
     end
     object cb_Themes: TComboBox
       Left = 93
-      Height = 30
+      Height = 25
       Top = 206
       Width = 448
       Anchors = [akTop, akLeft, akRight]
       Color = clBtnFace
-      ItemHeight = 16
+      ItemHeight = 0
       ParentShowHint = False
       ShowHint = True
       TabOrder = 13
     end
     object L_thema: TLabel
       Left = 7
-      Height = 17
+      Height = 15
       Top = 211
-      Width = 50
+      Width = 48
       Caption = 'Thème :'
       ParentColor = False
       ParentShowHint = False
@@ -330,7 +330,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object ed_DownLoadName: TEdit
       Left = 441
-      Height = 24
+      Height = 22
       Top = 24
       Width = 100
       ParentColor = True
@@ -339,9 +339,9 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label12: TLabel
       Left = 280
-      Height = 17
+      Height = 15
       Top = 29
-      Width = 156
+      Width = 148
       Caption = 'Fichier de téléchargement'
       ParentColor = False
     end
@@ -356,15 +356,15 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label45: TLabel
       Left = 376
-      Height = 17
+      Height = 15
       Top = 164
-      Width = 79
+      Width = 76
       Caption = 'Qualité MP3 :'
       ParentColor = False
     end
     object sp_Mp3Quality: TSpinEdit
       Left = 461
-      Height = 24
+      Height = 22
       Top = 160
       Width = 40
       MaxValue = 9
@@ -445,4 +445,4 @@ object F_WebPlayer: TF_WebPlayer
     left = 176
     top = 72
   end
-end
+end
