@@ -742,7 +742,7 @@ procedure TF_WebPlayer.p_genHtmlHome ( const as_directory, as_subdirForward, as_
                                        const ab_Root : Boolean );
 var
   lstl_Temp1,
-  lstl_HTMLHome,lstl_HTMLBody,lstl_HTMLDownload,
+  lstl_HTMLHome,lstl_HTMLBody,lstl_HTMLLines,
   lstl_DirList,lstl_DirLine,lstl_ListDirAudio, lstl_processes : TStringListUTF8;
   ls_destination: string;
   ls_Images: string;
@@ -751,7 +751,7 @@ var
   procedure p_addRoot;
   var ls_IndexDir, ls_subdir : String ;
   Begin
-    p_LoadStringList(lstl_HTMLDownload,CST_INDEX_BUTTON+CST_EXTENSION_HTML);
+    p_LoadStringList(lstl_HTMLLines,CST_INDEX_BUTTON+CST_EXTENSION_HTML);
     ls_IndexDir := copy ( as_directory, 1, Length(as_directory) - 1 );
     ls_subdir := '';
     repeat
@@ -759,8 +759,8 @@ var
       ls_IndexDir := ExtractSubDir ( ls_IndexDir );
     until ( pos ( DirectorySeparator, ls_IndexDir ) = 0 )
     or FileExistsUTF8(ls_IndexDir+DirectorySeparator+ed_IndexName.Text+CST_EXTENSION_HTML);
-    p_ReplaceLanguageString(lstl_HTMLDownload,'Link',ls_subdir+ed_IndexName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
-    p_ReplaceLanguageString(lstl_HTMLDownload,'Caption',gs_WebPlayer_Back,[rfReplaceAll]);
+    p_ReplaceLanguageString(lstl_HTMLLines,'Link',ls_subdir+ed_IndexName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
+    p_ReplaceLanguageString(lstl_HTMLLines,'Caption',gs_WebPlayer_Back,[rfReplaceAll]);
   End;
 begin
   p_Setcomments (( gs_WebPlayer_Home )); // advert for user
@@ -770,11 +770,11 @@ begin
   lstl_processes    := TStringListUTF8.Create;
   if ch_downloads.Checked Then
    Begin
-    lstl_HTMLDownload := TStringListUTF8.Create;
+    lstl_HTMLLines := TStringListUTF8.Create;
     p_LoadStringList ( lstl_HTMLBody, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
     p_ReplaceLanguageString(lstl_HTMLBody,'Link',ed_IndexName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
     p_ReplaceLanguageString(lstl_HTMLBody,'Caption',gs_WebPlayer_Back,[rfReplaceAll]);
-    lstl_HTMLDownload.AddStrings(lstl_HTMLBody);
+    lstl_HTMLLines.AddStrings(lstl_HTMLBody);
     lstl_HTMLBody.clear;
    end;
   if ab_Root Then
@@ -787,11 +787,31 @@ begin
     li_PathToDelete := Length(as_directory)+1;
     try
       lb_foundaudio := False;
-      p_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownload, lstl_processes, lb_first, lb_foundaudio, ab_Root );
+      p_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLLines, lstl_processes, lb_first, lb_foundaudio, ab_Root );
     finally
       lstl_Temp1.Free;
     end;
     p_LoadStringList ( lstl_HTMLBody, CST_INDEX_BODY+CST_EXTENSION_HTML );
+   if ch_downloads.Checked Then
+    Begin  // download and back link
+      p_CreateAHtmlFile(lstl_HTMLLines, CST_DOWNLOAD, me_Description.Lines.Text,
+         gs_WebPlayer_Downloads , gs_WebPlayer_Downloads, '', '');
+      p_ReplaceLanguageString(lstl_HTMLLines,'SubDir',as_subdirForward,[rfReplaceAll]);
+      p_saveFile(lstl_HTMLLines,gs_WebPlayer_Phase + gs_WebPlayer_Downloads,as_directory + ed_DownLoadName.Text + CST_EXTENSION_HTML);
+      p_LoadStringList ( lstl_HTMLLines, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
+      p_ReplaceLanguageString(lstl_HTMLLines,'Link',ed_DownLoadName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
+      p_ReplaceLanguageString(lstl_HTMLLines,'Caption',gs_WebPlayer_Downloads,[rfReplaceAll]);
+      if as_subdirForward= '' Then
+        Begin
+         p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLLines.Text+'[ButtonsToAdd]',[rfReplaceAll]);
+        End
+       Else
+        Begin
+          p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLLines.Text+#10+'[ButtonsToAdd]',[rfReplaceAll]);
+          p_addRoot;
+          p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLLines.Text+'[ButtonsToAdd]',[rfReplaceAll]);
+        End;
+    End;
     if lstl_ListDirAudio.Count>0 Then
       Begin
        lstl_DirList := TStringListUTF8.Create;
@@ -812,36 +832,21 @@ begin
             lstl_ListDirAudio.Delete(0);
            end;
 
-          p_ReplaceLanguageString(lstl_HTMLBody,'DirList','<ul>'+StringReplace(fs_ReplaceEndOfLines (lstl_DirList),'"','\"',[rfReplaceAll])+'</ul>',[rfReplaceAll]);
+          p_ReplaceLanguageString(lstl_HTMLBody,'DirList','<ul>'+StringReplace(StringReplace(lstl_DirList.Text,'"','\"',[rfReplaceAll]),#10,'\n',[rfReplaceAll])+'</ul>',[rfReplaceAll]);
         finally
           lstl_DirList.Free;
           lstl_DirLine.Free;
         end;
+        p_LoadStringList ( lstl_HTMLLines, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
+        p_ReplaceLanguageString(lstl_HTMLLines,'Link','#" onclick="DirectoriesShowHide();',[rfReplaceAll]);
+        p_ReplaceLanguageString(lstl_HTMLLines,'Caption','...',[rfReplaceAll]);
+        p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLLines.Text,[rfReplaceAll]);
       end
      else
+      Begin
         p_ReplaceLanguageString(lstl_HTMLBody,'DirList','',[rfReplaceAll]);
-    if ch_downloads.Checked Then
-     Begin  // download and back link
-       p_CreateAHtmlFile(lstl_HTMLDownload, CST_DOWNLOAD, me_Description.Lines.Text,
-          gs_WebPlayer_Downloads , gs_WebPlayer_Downloads, '', '');
-       p_ReplaceLanguageString(lstl_HTMLDownload,'SubDir',as_subdirForward,[rfReplaceAll]);
-       p_saveFile(lstl_HTMLDownload,gs_WebPlayer_Phase + gs_WebPlayer_Downloads,as_directory + ed_DownLoadName.Text + CST_EXTENSION_HTML);
-       p_LoadStringList ( lstl_HTMLDownload, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
-       p_ReplaceLanguageString(lstl_HTMLDownload,'Link',ed_DownLoadName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
-       p_ReplaceLanguageString(lstl_HTMLDownload,'Caption',gs_WebPlayer_Downloads,[rfReplaceAll]);
-       if as_subdirForward= '' Then
-         Begin
-          p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownload.Text,[rfReplaceAll]);
-         End
-        Else
-         Begin
-           p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownload.Text+#10+'[ButtonsToAdd]',[rfReplaceAll]);
-           p_addRoot;
-           p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownload.Text,[rfReplaceAll]);
-         End;
-     End
-    Else
-     p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd','',[rfReplaceAll]);
+        p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd','',[rfReplaceAll]);
+      end;
     p_ReplaceLanguageString(lstl_HTMLBody,'Describe',fs_Format_Lines(me_Description.Text ));
     lstl_HTMLHome.AddStrings(lstl_HTMLBody);
     lstl_HTMLBody.Clear;
@@ -874,7 +879,7 @@ begin
     lstl_HTMLBody    .Destroy;
     lstl_ListDirAudio.Destroy;
     if ch_downloads.Checked Then
-     lstl_HTMLDownload.Destroy;
+     lstl_HTMLLines.Destroy;
     if ab_Root Then
      lstl_processes.Destroy;
   end;
