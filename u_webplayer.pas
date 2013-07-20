@@ -65,14 +65,16 @@ const
                                              FileUnit : 'U_WebPlayer' ;
                                              Owner : 'Matthieu Giroux' ;
                                              Comment : 'Créateur de player HTNL statique.' ;
-                                             BugsStory : '1.0.4.0 : Describe.' + 1#13#10
+                                             BugsStory : '1.0.5.1 : correct progress.' + 1#13#10
+                                                       + '1.0.5.0 : optionnal ... button.' + 1#13#10
+                                                       + '1.0.4.0 : Describe.' + 1#13#10
                                                        + '1.0.3.0 : HTML Images.' + 1#13#10
                                                        + '1.0.2.0 : Directory view.' + 1#13#10
                                                        + '1.0.1.0 : File sorting.' + 1#13#10
                                                        + '1.0.0.0 : Jquery playlist version.' + 1#13#10
                                                        + '0.9.9.0 : First published version'  ;
                                              UnitType : CST_TYPE_UNITE_APPLI ;
-                                             Major : 1 ; Minor : 0 ; Release : 4 ; Build : 0 );
+                                             Major : 1 ; Minor : 0 ; Release : 5 ; Build : 1 );
 {$ENDIF}
 
 const CST_WebPlayer = 'PlayerCreator' ;
@@ -124,7 +126,6 @@ type
     fne_export: TFileNameEdit;
     fne_import: TFileNameEdit;
     FWClose1: TFWClose;
-    FWEraseImage: TFWErase;
     bt_export: TFWExport;
     bt_see: TFWSearch;
     IBQ_Individu: TIBQuery;
@@ -180,7 +181,7 @@ type
     procedure p_genHtmlHome ( const as_directory, as_subdirForward, as_artist : String;
                               const ab_Root : Boolean );
     function  p_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
-    procedure p_IncProgressInd;
+    procedure p_IncProgress;
     procedure p_Setcomments(const as_Comment: String);
     procedure p_Unfat(const as_directory: String);
     procedure p_Unindex(const as_directory: String;const astl_List1ToUnindex : TStrings);
@@ -348,7 +349,8 @@ var li_EndExt : Integer ;
                Begin
                 p_ReplaceLanguageString(astl_temp1,'SourcePoster','',[rfReplaceAll]);
                end;
-           if ab_Root
+           if ch_convert.Checked
+           and ab_Root
            and FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_MP3)
            and not FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_OGG)
            and not FileExistsUTF8(ls_FileWithoutExt+CST_CONVERTED+CST_EXTENSION_OGG)
@@ -363,6 +365,7 @@ var li_EndExt : Integer ;
             Then p_ReplaceLanguageString(astl_temp1,'SourceOGG',ls_SourceMini +CST_CONVERTED+CST_EXTENSION_OGG,[rfReplaceAll])
             Else p_ReplaceLanguageString(astl_temp1,'SourceOGG','',[rfReplaceAll]);
            if ab_Root
+           and ch_convert.Checked
            and FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_OGG)
            and not FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_MP3)
            and not FileExistsUTF8(ls_FileWithoutExt+CST_CONVERTED+CST_EXTENSION_MP3)
@@ -395,9 +398,6 @@ begin
   try
    if fb_FindFiles ( lstl_temp2, as_Source, True, True, True, '*' ) Then
     Begin
-     if ( ai_Level = 1 )
-     and ab_Root Then
-      pb_Progress.MaxValue:=lstl_temp2.Count-1;
      lstl_temp2.Sort;
      while lstl_temp2.count > 0 do
       Begin
@@ -421,6 +421,10 @@ begin
               p_genHtmlHome ( ls_Source+DirectorySeparator, as_subdirForward+'../', ls_FileName, False );
               astl_DirListAudio.Add(ls_Source);
              end;
+            if  ab_Root
+            and ( ai_Level = 1 )
+             Then
+              p_IncProgress;
           End
         Else
           if FileExistsUTF8 ( ls_Source ) Then
@@ -433,9 +437,6 @@ begin
                p_addFile( ch_WMA.Checked, CST_EXTENSION_WMA );
             End;
         lstl_temp2.Delete(0);
-        if ( ai_Level = 1 )
-        and ab_Root Then
-         pb_Progress.Progress:=pb_Progress.Progress+1;
       End ;
     end;
   finally
@@ -511,6 +512,7 @@ end;
 // Main Web Site Generation
 procedure TF_WebPlayer.bt_genClick(Sender: TObject);
 var ls_Source, ls_ToAdd : String;
+    lstl_DirFiles : TStringList;
 begin
   if gb_Generate then
     Exit;
@@ -522,6 +524,13 @@ begin
       or ch_IndexAll.Checked)
   and not fb_DeleteOrNot (ls_Source,nil) Then
     Exit;
+  pb_Progress.Progress := 0;
+  lstl_DirFiles := TStringList.Create;
+  try
+    fb_FindFiles(lstl_DirFiles,gs_RootPathForExport,False,True);
+    pb_Progress.MaxValue:=lstl_DirFiles.count;
+  finally
+  end;
   if (cb_Themes.ItemIndex = -1) then
     cb_Themes.ItemIndex := 0;
   if (cb_Files.ItemIndex = -1) then
@@ -545,8 +554,7 @@ begin
   try // starting work
     p_CreateKeyWords;
     gb_Generate := True;
-    pb_Progress.Progress := 0;
-    p_genHtmlHome ( gs_RootPathForExport, '', '', ch_convert.Checked );
+    p_genHtmlHome ( gs_RootPathForExport, '', '', True );
   finally
     pa_options.Enabled:=True;
     gb_Generate := False;
@@ -722,9 +730,9 @@ Begin
     end;
 End;
 
-// procedure TF_WebPlayer.p_IncProgressInd
+// procedure TF_WebPlayer.p_IncProgress
 // increments specialized progress bar
-procedure TF_WebPlayer.p_IncProgressInd;
+procedure TF_WebPlayer.p_IncProgress;
 begin
   pb_Progress.Progress := pb_Progress.Progress + 1; // growing
   Application.ProcessMessages;
@@ -777,11 +785,11 @@ begin
     lstl_HTMLLines.AddStrings(lstl_HTMLBody);
     lstl_HTMLBody.clear;
    end;
-  if ab_Root Then
+  if ab_Root
+  and ch_convert.Checked Then
    lstl_processes := TStringListUTF8.Create;
   try
     p_ClearKeyWords;
-    pb_Progress.Progress := 0; // initing not needed user value
     lstl_Temp1:=TStringListUTF8.Create;
     lb_first := True;
     li_PathToDelete := Length(as_directory)+1;
@@ -855,7 +863,8 @@ begin
     p_ReplaceLanguageString(lstl_HTMLHome,'SubDir',as_subdirForward,[rfReplaceAll]);
     // saving the page
     p_saveFile(lstl_HTMLHome,gs_WebPlayer_Phase + ' - ' + gs_WebPlayer_Home,as_directory + ed_IndexName.Text + CST_EXTENSION_HTML);
-    if ab_Root Then
+    if ab_Root
+    and ch_convert.Checked Then
       if (lstl_processes.Count > 0) Then
        Begin
         p_saveFile(lstl_processes,gs_WebPlayer_Phase + ' - ' + gs_WebPlayer_Convert,as_directory + CST_SCRIPT_FILE + CST_EXTENSION_SCRIPT);
@@ -880,7 +889,8 @@ begin
     lstl_ListDirAudio.Destroy;
     if ch_downloads.Checked Then
      lstl_HTMLLines.Destroy;
-    if ab_Root Then
+    if ab_Root
+    and ch_convert.Checked Then
      lstl_processes.Destroy;
   end;
 end;

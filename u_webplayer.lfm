@@ -36,9 +36,9 @@ object F_WebPlayer: TF_WebPlayer
       Align = alLeft
     end
     object FWClose1: TFWClose
-      Left = 440
+      Left = 441
       Height = 25
-      Top = 24
+      Top = 27
       Width = 98
       Caption = 'Fermer'
       TabOrder = 0
@@ -56,7 +56,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 440
       Height = 25
       Top = 0
-      Width = 88
+      Width = 96
       Caption = 'Indexer'
       TabOrder = 1
       Anchors = [akTop, akRight]
@@ -137,23 +137,13 @@ object F_WebPlayer: TF_WebPlayer
       Caption = 'Dossier à indexer :'
       ParentColor = False
     end
-    object FWEraseImage: TFWErase
-      Left = 184
-      Height = 25
-      Top = 137
-      Width = 20
-      Caption = 'Supprimer'
-      TabOrder = 2
-      Font.Color = 2171169
-      ParentFont = False
-    end
     object ed_IndexName: TEdit
       Left = 103
       Height = 22
       Top = 24
       Width = 169
       ParentColor = True
-      TabOrder = 3
+      TabOrder = 2
       Text = 'index'
     end
     object Label10: TLabel
@@ -174,7 +164,7 @@ object F_WebPlayer: TF_WebPlayer
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
-      TabOrder = 4
+      TabOrder = 3
     end
     object bt_export: TFWExport
       Left = 3
@@ -182,7 +172,7 @@ object F_WebPlayer: TF_WebPlayer
       Top = 299
       Width = 88
       Caption = 'Exporter'
-      TabOrder = 5
+      TabOrder = 4
       OnClick = bt_exportClick
     end
     object fne_import: TFileNameEdit
@@ -196,7 +186,7 @@ object F_WebPlayer: TF_WebPlayer
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
-      TabOrder = 6
+      TabOrder = 5
       OnChange = fne_importChange
     end
     object Label11: TLabel
@@ -218,7 +208,7 @@ object F_WebPlayer: TF_WebPlayer
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
-      TabOrder = 7
+      TabOrder = 6
     end
     object Label44: TLabel
       Left = 7
@@ -237,7 +227,7 @@ object F_WebPlayer: TF_WebPlayer
       Color = clBtnFace
       ItemHeight = 0
       Style = csDropDownList
-      TabOrder = 8
+      TabOrder = 7
     end
     object me_Bottom: TMemo
       Left = 3
@@ -247,7 +237,7 @@ object F_WebPlayer: TF_WebPlayer
       Anchors = [akTop, akLeft, akRight, akBottom]
       ParentColor = True
       ScrollBars = ssAutoBoth
-      TabOrder = 9
+      TabOrder = 8
     end
     object Label6: TLabel
       Left = 3
@@ -263,7 +253,7 @@ object F_WebPlayer: TF_WebPlayer
       Top = 144
       Width = 60
       Caption = 'MP3'
-      TabOrder = 10
+      TabOrder = 9
       Checked = True
       State = cbChecked
       UseDockManager = False
@@ -274,7 +264,7 @@ object F_WebPlayer: TF_WebPlayer
       Top = 144
       Width = 60
       Caption = 'WMA'
-      TabOrder = 11
+      TabOrder = 10
       Checked = True
       State = cbChecked
       UseDockManager = False
@@ -284,7 +274,7 @@ object F_WebPlayer: TF_WebPlayer
       Height = 25
       Top = 182
       Caption = 'Voir'
-      TabOrder = 12
+      TabOrder = 11
       Anchors = [akTop, akRight]
       OnClick = bt_seeClick
     end
@@ -298,7 +288,7 @@ object F_WebPlayer: TF_WebPlayer
       ItemHeight = 0
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 13
+      TabOrder = 12
     end
     object L_thema: TLabel
       Left = 7
@@ -316,7 +306,7 @@ object F_WebPlayer: TF_WebPlayer
       Top = 145
       Width = 254
       Caption = 'Indexer aussi les sous-répertoires'
-      TabOrder = 14
+      TabOrder = 13
       UseDockManager = False
     end
     object ch_downloads: TJvXPCheckbox
@@ -325,7 +315,7 @@ object F_WebPlayer: TF_WebPlayer
       Top = 164
       Width = 148
       Caption = 'Téléchargements'
-      TabOrder = 15
+      TabOrder = 14
       UseDockManager = False
     end
     object ed_DownLoadName: TEdit
@@ -334,7 +324,7 @@ object F_WebPlayer: TF_WebPlayer
       Top = 24
       Width = 100
       ParentColor = True
-      TabOrder = 16
+      TabOrder = 15
       Text = 'download'
     end
     object Label12: TLabel
@@ -351,7 +341,7 @@ object F_WebPlayer: TF_WebPlayer
       Top = 164
       Width = 204
       Caption = 'Convertir en OGG et MP3'
-      TabOrder = 17
+      TabOrder = 16
       UseDockManager = False
     end
     object Label45: TLabel
@@ -368,7 +358,7 @@ object F_WebPlayer: TF_WebPlayer
       Top = 160
       Width = 40
       MaxValue = 9
-      TabOrder = 18
+      TabOrder = 17
       Value = 1
     end
   end
