@@ -65,7 +65,8 @@ const
                                              FileUnit : 'U_WebPlayer' ;
                                              Owner : 'Matthieu Giroux' ;
                                              Comment : 'Créateur de player HTNL statique.' ;
-                                             BugsStory : '1.0.5.1 : correct progress.' + 1#13#10
+                                             BugsStory : '1.0.6.0 : More explicit title.' + 1#13#10
+                                                       + '1.0.5.1 : correct progress.' + 1#13#10
                                                        + '1.0.5.0 : optionnal ... button.' + 1#13#10
                                                        + '1.0.4.0 : Describe.' + 1#13#10
                                                        + '1.0.3.0 : HTML Images.' + 1#13#10
@@ -74,7 +75,7 @@ const
                                                        + '1.0.0.0 : Jquery playlist version.' + 1#13#10
                                                        + '0.9.9.0 : First published version'  ;
                                              UnitType : CST_TYPE_UNITE_APPLI ;
-                                             Major : 1 ; Minor : 0 ; Release : 5 ; Build : 1 );
+                                             Major : 1 ; Minor : 0 ; Release : 6 ; Build : 0 );
 {$ENDIF}
 
 const CST_WebPlayer = 'PlayerCreator' ;
@@ -803,7 +804,7 @@ begin
    if ch_downloads.Checked Then
     Begin  // download and back link
       p_CreateAHtmlFile(lstl_HTMLLines, CST_DOWNLOAD, me_Description.Lines.Text,
-         gs_WebPlayer_Downloads , gs_WebPlayer_Downloads, '', '');
+         as_artist + ' - ' + gs_WebPlayer_Downloads , gs_WebPlayer_Downloads, '', '');
       p_ReplaceLanguageString(lstl_HTMLLines,'SubDir',as_subdirForward,[rfReplaceAll]);
       p_saveFile(lstl_HTMLLines,gs_WebPlayer_Phase + gs_WebPlayer_Downloads,as_directory + ed_DownLoadName.Text + CST_EXTENSION_HTML);
       p_LoadStringList ( lstl_HTMLLines, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
@@ -859,7 +860,7 @@ begin
     lstl_HTMLHome.AddStrings(lstl_HTMLBody);
     lstl_HTMLBody.Clear;
     p_CreateAHtmlFile(lstl_HTMLHome, CST_INDEX, me_Description.Lines.Text,
-      gs_WebPlayer_Home , gs_WebPlayer_Home, '', '');
+      as_artist , gs_WebPlayer_Home, '', '');
     p_ReplaceLanguageString(lstl_HTMLHome,'SubDir',as_subdirForward,[rfReplaceAll]);
     // saving the page
     p_saveFile(lstl_HTMLHome,gs_WebPlayer_Phase + ' - ' + gs_WebPlayer_Home,as_directory + ed_IndexName.Text + CST_EXTENSION_HTML);
@@ -914,12 +915,16 @@ procedure TF_WebPlayer.p_CreateAHtmlFile(const astl_Destination: TStrings;
   const as_ExtFile: string =
   CST_EXTENSION_HTML;
   const as_BeforeHTML: string = ''; const astl_Body : TStrings = nil );
+var ls_title : String;
 begin
   if not assigned ( gstl_HeadKeyWords ) Then
     Abort;       // can quit while creating
+  if as_Title = ''
+   Then ls_title := 'Lazarus Web Player'
+   else ls_title := 'Lazarus Web Player - '+as_Title;
   p_CreateHTMLFile(nil, astl_Destination, '',
-    as_Describe, gstl_HeadKeyWords.Text, 'Lazarus Web Player - ' +
-    as_Title, as_LongTitle, as_BeginingFile + '1' + as_ExtFile, as_BeginingFile + '2' +
+    as_Describe, gstl_HeadKeyWords.Text, ls_Title,
+    as_LongTitle, as_BeginingFile + '1' + as_ExtFile, as_BeginingFile + '2' +
     as_ExtFile, as_BeginingFile + '3' + as_ExtFile, as_BeginingFile +
     '4' + as_ExtFile, as_Subdir, as_BeforeHTML, gs_WebPlayer_Language, astl_Body, False );
 end;
