@@ -345,7 +345,7 @@ var li_EndExt : Integer ;
            //ShowMessage(as_Source+CST_EXTENSION_PNG+ls_SourceMini +CST_EXTENSION_JPEG+as_Source+DirectorySeparator+as_parent +CST_EXTENSION_JPEG);
            if not fb_ReplaceImg (ls_FileWithoutExt)
             Then if not fb_ReplaceImg (as_Source)
-             Then if not fb_ReplaceImg(as_Source+DirectorySeparator+ExtractDirName (as_Source ))
+             Then if not fb_ReplaceImg(as_Source+ExtractDirName (as_Source ))
               Then
                Begin
                 p_ReplaceLanguageString(astl_temp1,'SourcePoster','',[rfReplaceAll]);

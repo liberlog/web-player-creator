@@ -104,7 +104,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object ed_Author: TEdit
       Left = 103
-      Height = 22
+      Height = 24
       Top = 0
       Width = 438
       Anchors = [akTop, akLeft, akRight]
@@ -139,7 +139,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object ed_IndexName: TEdit
       Left = 103
-      Height = 22
+      Height = 24
       Top = 24
       Width = 169
       ParentColor = True
@@ -156,7 +156,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object de_indexdir: TDirectoryEdit
       Left = 124
-      Height = 22
+      Height = 24
       Top = 182
       Width = 311
       ShowHidden = False
@@ -177,7 +177,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object fne_import: TFileNameEdit
       Left = 95
-      Height = 22
+      Height = 24
       Top = 275
       Width = 421
       FilterIndex = 0
@@ -199,7 +199,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object fne_export: TFileNameEdit
       Left = 95
-      Height = 22
+      Height = 24
       Top = 299
       Width = 421
       FilterIndex = 0
@@ -220,7 +220,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object cb_Files: TComboBox
       Left = 93
-      Height = 26
+      Height = 28
       Top = 232
       Width = 447
       Anchors = [akTop, akLeft, akRight]
@@ -280,7 +280,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object cb_Themes: TComboBox
       Left = 93
-      Height = 25
+      Height = 27
       Top = 206
       Width = 448
       Anchors = [akTop, akLeft, akRight]
@@ -320,7 +320,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object ed_DownLoadName: TEdit
       Left = 441
-      Height = 22
+      Height = 24
       Top = 24
       Width = 100
       ParentColor = True
@@ -331,7 +331,7 @@ object F_WebPlayer: TF_WebPlayer
       Left = 280
       Height = 15
       Top = 29
-      Width = 148
+      Width = 149
       Caption = 'Fichier de téléchargement'
       ParentColor = False
     end
@@ -354,7 +354,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object sp_Mp3Quality: TSpinEdit
       Left = 461
-      Height = 22
+      Height = 24
       Top = 160
       Width = 40
       MaxValue = 9
