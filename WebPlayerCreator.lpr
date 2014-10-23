@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, u_webplayer, webplayer_strings, lazextbuttons, lazextcomponents,
-  lazextcopy, ibexpress, JvXPBarLaz, exthtml, lazflatstyle;
+  lazextcopy, ibexpress, JvXPBarLaz, exthtml;
 
 {$R *.res}
 
