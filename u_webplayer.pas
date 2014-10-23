@@ -52,12 +52,12 @@ uses
 {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, DB,
   IBQuery, DBCtrls, ExtCtrls, Buttons, ComCtrls, DBGrids,
-  functions_html, JvXPCheckCtrls, Spin, U_OnFormInfoIni,
+  functions_html, ExtJvXPCheckCtrls, Spin, U_OnFormInfoIni,
   U_ExtImage, u_buttons_appli, IBSQL, U_ExtFileCopy, u_traducefile,
-  JvXPButtons, IniFiles, TFlatEditUnit,TFlatGaugeUnit,
+  ExtJvXPButtons, IniFiles,
   u_extabscopy, IBCustomDataSet, Grids, FileCtrl,
-  ImagingComponents, JvXPCore, TFlatComboBoxUnit, TFlatMemoUnit,
-  u_buttons_defs, u_extsearchedit, TFlatCheckBoxUnit;
+  BGRABitmap, JvXPCore,
+  u_buttons_defs, u_extsearchedit;
 
 {$IFNDEF FPC}
 const
@@ -65,7 +65,8 @@ const
                                              FileUnit : 'U_WebPlayer' ;
                                              Owner : 'Matthieu Giroux' ;
                                              Comment : 'Créateur de player HTNL statique.' ;
-                                             BugsStory : '1.0.6.0 : More explicit title.' + 1#13#10
+                                             BugsStory : '1.0.6.1 : Testing with Extended 1.8.' + 1#13#10
+                                                       + '1.0.6.0 : More explicit title.' + 1#13#10
                                                        + '1.0.5.1 : correct progress.' + 1#13#10
                                                        + '1.0.5.0 : optionnal ... button.' + 1#13#10
                                                        + '1.0.4.0 : Describe.' + 1#13#10
@@ -147,7 +148,7 @@ type
     OnFormInfoIni: TOnFormInfoIni;
     OpenDialog: TOpenDialog;
     pa_options: TPanel;
-    pb_Progress: TFlatGauge;
+    pb_Progress: TProgressBar;
     spSkinPanel1: TPanel;
     sp_Mp3Quality: TSpinEdit;
     procedure bt_exportClick(Sender: TObject);
@@ -525,11 +526,11 @@ begin
       or ch_IndexAll.Checked)
   and not fb_DeleteOrNot (ls_Source,nil) Then
     Exit;
-  pb_Progress.Progress := 0;
+  pb_Progress.Position := 0;
   lstl_DirFiles := TStringList.Create;
   try
     fb_FindFiles(lstl_DirFiles,gs_RootPathForExport,False,True);
-    pb_Progress.MaxValue:=lstl_DirFiles.count;
+    pb_Progress.Max:=lstl_DirFiles.count;
   finally
   end;
   if (cb_Themes.ItemIndex = -1) then
@@ -735,7 +736,8 @@ End;
 // increments specialized progress bar
 procedure TF_WebPlayer.p_IncProgress;
 begin
-  pb_Progress.Progress := pb_Progress.Progress + 1; // growing
+  with pb_Progress do
+    Position := Position + 1; // growing
   Application.ProcessMessages;
 end;
 

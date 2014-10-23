@@ -15,7 +15,7 @@ object F_WebPlayer: TF_WebPlayer
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.0.10.0'
+  LCLVersion = '1.2.6.0'
   object spSkinPanel1: TPanel
     Left = 0
     Height = 52
@@ -25,15 +25,13 @@ object F_WebPlayer: TF_WebPlayer
     ClientHeight = 52
     ClientWidth = 546
     TabOrder = 0
-    object pb_Progress: TFlatGauge
+    object pb_Progress: TProgressBar
       Left = 1
       Height = 50
       Top = 1
       Width = 144
-      AdvColorBorder = 0
-      ColorBorder = 8623776
-      Progress = 25
       Align = alLeft
+      TabOrder = 4
     end
     object FWClose1: TFWClose
       Left = 441
@@ -46,9 +44,9 @@ object F_WebPlayer: TF_WebPlayer
     end
     object lb_Comments: TLabel
       Left = 147
-      Height = 15
+      Height = 14
       Top = 10
-      Width = 69
+      Width = 68
       Caption = 'Bienvenue !'
       ParentColor = False
     end
@@ -96,15 +94,15 @@ object F_WebPlayer: TF_WebPlayer
     TabOrder = 1
     object Label2: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 5
-      Width = 47
+      Width = 46
       Caption = 'Auteur :'
       ParentColor = False
     end
     object ed_Author: TEdit
       Left = 103
-      Height = 24
+      Height = 22
       Top = 0
       Width = 438
       Anchors = [akTop, akLeft, akRight]
@@ -123,23 +121,23 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label3: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 48
-      Width = 72
+      Width = 71
       Caption = 'Description :'
       ParentColor = False
     end
     object lb_Images: TLabel
       Left = 8
-      Height = 15
+      Height = 14
       Top = 185
-      Width = 109
+      Width = 108
       Caption = 'Dossier à indexer :'
       ParentColor = False
     end
     object ed_IndexName: TEdit
       Left = 103
-      Height = 24
+      Height = 22
       Top = 24
       Width = 169
       ParentColor = True
@@ -148,20 +146,20 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label10: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 29
-      Width = 92
+      Width = 91
       Caption = 'Nom du fichier :'
       ParentColor = False
     end
     object de_indexdir: TDirectoryEdit
       Left = 124
-      Height = 24
+      Height = 22
       Top = 182
       Width = 311
       ShowHidden = False
       ButtonWidth = 23
-      NumGlyphs = 0
+      NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
       TabOrder = 3
@@ -177,13 +175,13 @@ object F_WebPlayer: TF_WebPlayer
     end
     object fne_import: TFileNameEdit
       Left = 95
-      Height = 24
+      Height = 22
       Top = 275
       Width = 421
       FilterIndex = 0
       HideDirectories = False
       ButtonWidth = 23
-      NumGlyphs = 0
+      NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
       TabOrder = 5
@@ -191,36 +189,36 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label11: TLabel
       Left = 7
-      Height = 15
+      Height = 14
       Top = 282
-      Width = 58
+      Width = 57
       Caption = 'Importer :'
       ParentColor = False
     end
     object fne_export: TFileNameEdit
       Left = 95
-      Height = 24
+      Height = 22
       Top = 299
       Width = 421
       FilterIndex = 0
       HideDirectories = False
       ButtonWidth = 23
-      NumGlyphs = 0
+      NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
       TabOrder = 6
     end
     object Label44: TLabel
       Left = 7
-      Height = 15
+      Height = 14
       Top = 240
-      Width = 54
+      Width = 53
       Caption = 'Sources :'
       ParentColor = False
     end
     object cb_Files: TComboBox
       Left = 93
-      Height = 28
+      Height = 26
       Top = 232
       Width = 447
       Anchors = [akTop, akLeft, akRight]
@@ -231,7 +229,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object me_Bottom: TMemo
       Left = 3
-      Height = 36
+      Height = 38
       Top = 344
       Width = 538
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -241,9 +239,9 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label6: TLabel
       Left = 3
-      Height = 15
+      Height = 14
       Top = 328
-      Width = 142
+      Width = 141
       Caption = 'En bas de chaque page :'
       ParentColor = False
     end
@@ -280,7 +278,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object cb_Themes: TComboBox
       Left = 93
-      Height = 27
+      Height = 22
       Top = 206
       Width = 448
       Anchors = [akTop, akLeft, akRight]
@@ -292,9 +290,9 @@ object F_WebPlayer: TF_WebPlayer
     end
     object L_thema: TLabel
       Left = 7
-      Height = 15
+      Height = 14
       Top = 211
-      Width = 48
+      Width = 47
       Caption = 'Thème :'
       ParentColor = False
       ParentShowHint = False
@@ -320,7 +318,7 @@ object F_WebPlayer: TF_WebPlayer
     end
     object ed_DownLoadName: TEdit
       Left = 441
-      Height = 24
+      Height = 22
       Top = 24
       Width = 100
       ParentColor = True
@@ -329,9 +327,9 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label12: TLabel
       Left = 280
-      Height = 15
+      Height = 14
       Top = 29
-      Width = 149
+      Width = 147
       Caption = 'Fichier de téléchargement'
       ParentColor = False
     end
@@ -346,9 +344,9 @@ object F_WebPlayer: TF_WebPlayer
     end
     object Label45: TLabel
       Left = 376
-      Height = 15
+      Height = 14
       Top = 164
-      Width = 76
+      Width = 75
       Caption = 'Qualité MP3 :'
       ParentColor = False
     end
@@ -376,6 +374,7 @@ object F_WebPlayer: TF_WebPlayer
   object IBQ_Individu: TIBQuery
     BufferChunks = 1000
     CachedUpdates = False
+    GenerateParamNames = False
     GeneratorField.ApplyOnEvent = gaeOnNewRecord
     SQL.Strings = (
       'select  CLE_FICHE,NUM_SOSA,'
@@ -401,7 +400,7 @@ object F_WebPlayer: TF_WebPlayer
         ParamType = ptInput
       end>
   end
-  object ds_Individu: TDatasource
+  object ds_Individu: TDataSource
     DataSet = IBQ_Individu
     left = 328
     top = 248
@@ -418,8 +417,8 @@ object F_WebPlayer: TF_WebPlayer
     SaveEdits = [feTEdit, feTCheck, feTComboValue, feTDirectoryEdit, feTFileNameEdit, feTMemo, feTRadio, feTRadioGroup, feTSpinEdit]
     SaveForm = [sfSavePos, sfSaveSizes]
     Options = [loAutoUpdate, loAutoWrite]
-    left = 280
-    top = 160
+    left = 264
+    top = 168
   end
   object FileCopy: TExtFileCopy
     Errors = 0

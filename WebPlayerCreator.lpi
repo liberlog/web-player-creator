@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -32,13 +32,13 @@
     </RunParams>
     <RequiredPackages Count="9">
       <Item1>
-        <PackageName Value="JvXPBarLaz"/>
+        <PackageName Value="lazextcopy"/>
       </Item1>
       <Item2>
-        <PackageName Value="ExtHTML"/>
+        <PackageName Value="JvXPBarLaz"/>
       </Item2>
       <Item3>
-        <PackageName Value="ExtCopy"/>
+        <PackageName Value="ExtHTML"/>
       </Item3>
       <Item4>
         <PackageName Value="lazextcomponents"/>
