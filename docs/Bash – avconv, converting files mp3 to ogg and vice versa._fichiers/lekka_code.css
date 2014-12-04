@@ -1,0 +1,54 @@
+#text pre{
+	white-space: pre-wrap;
+	background-color: #111111;
+	margin: 2px 2px 15px 2px;
+	padding: 2px;
+}
+
+#text code{
+	font-size: 14px;
+	color: #4477aa;
+	font-weight: bold;
+}
+
+#text code.samples{
+	font-size: 14px;
+	color: #efefef;
+	width: 400px;
+	padding: 0px 2px;
+	background-color: #111111;
+}
+
+a.print {
+	text-decoration: none;
+	padding: 2px 2px 2px 2px;
+	color: #48bdff;
+	border: 2px solid #343434;
+	background-color: #575757;
+}
+
+a.print:hover {
+	background-color: #757575;
+}
+
+fieldset{
+	border: 1px solid #aaaaaa;
+	font-size: 16px;
+	color: #442121;
+	margin: 5px 0px 25px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

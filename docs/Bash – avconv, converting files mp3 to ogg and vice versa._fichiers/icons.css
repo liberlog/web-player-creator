@@ -1,0 +1,25 @@
+#ICONS_UL{
+	list-style: none;
+	margin: 10px 0px 0px 0px;
+}
+
+#ICONS_UL a{
+	text-decoration: none;
+	outline: none;
+}
+
+
+#ICONS_UL p:hover{
+	color: #2233ff;
+}
+
+
+#ICONS_UL img{
+	padding: 3px;
+	float: left;
+}
+
+#ICONS_UL p{
+	padding-right: 10px;
+	color: #446612;
+}
