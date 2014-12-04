@@ -257,7 +257,7 @@ object F_WebPlayer: TF_WebPlayer
       UseDockManager = False
     end
     object ch_WMA: TJvXPCheckbox
-      Left = 152
+      Left = 124
       Height = 17
       Top = 144
       Width = 60
@@ -299,9 +299,9 @@ object F_WebPlayer: TF_WebPlayer
       ShowHint = True
     end
     object ch_IndexAll: TJvXPCheckbox
-      Left = 224
+      Left = 292
       Height = 17
-      Top = 145
+      Top = 144
       Width = 254
       Caption = 'Indexer aussi les sous-répertoires'
       TabOrder = 13
@@ -312,7 +312,7 @@ object F_WebPlayer: TF_WebPlayer
       Height = 17
       Top = 164
       Width = 148
-      Caption = 'Téléchargements'
+      Caption = 'Télécharger tout'
       TabOrder = 14
       UseDockManager = False
     end
@@ -359,9 +359,31 @@ object F_WebPlayer: TF_WebPlayer
       TabOrder = 17
       Value = 1
     end
+    object ch_ZIP: TJvXPCheckbox
+      Left = 184
+      Height = 17
+      Top = 144
+      Width = 48
+      Caption = 'ZIP'
+      TabOrder = 18
+      Checked = True
+      State = cbChecked
+      UseDockManager = False
+    end
+    object ch_7ZIP: TJvXPCheckbox
+      Left = 232
+      Height = 17
+      Top = 144
+      Width = 48
+      Caption = '7ZIP'
+      TabOrder = 19
+      Checked = True
+      State = cbChecked
+      UseDockManager = False
+    end
   end
   object ch_OGG: TJvXPCheckbox
-    Left = 80
+    Left = 64
     Height = 17
     Top = 144
     Width = 60
