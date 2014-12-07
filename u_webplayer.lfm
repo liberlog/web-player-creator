@@ -211,7 +211,7 @@ object F_WebPlayer: TF_WebPlayer
     object Label44: TLabel
       Left = 7
       Height = 14
-      Top = 240
+      Top = 258
       Width = 53
       Caption = 'Sources :'
       ParentColor = False
@@ -219,7 +219,7 @@ object F_WebPlayer: TF_WebPlayer
     object cb_Files: TComboBox
       Left = 93
       Height = 26
-      Top = 232
+      Top = 250
       Width = 447
       Anchors = [akTop, akLeft, akRight]
       Color = clBtnFace
@@ -277,9 +277,9 @@ object F_WebPlayer: TF_WebPlayer
       OnClick = bt_seeClick
     end
     object cb_Themes: TComboBox
-      Left = 93
+      Left = 94
       Height = 22
-      Top = 206
+      Top = 229
       Width = 448
       Anchors = [akTop, akLeft, akRight]
       Color = clBtnFace
@@ -289,9 +289,9 @@ object F_WebPlayer: TF_WebPlayer
       TabOrder = 12
     end
     object L_thema: TLabel
-      Left = 7
+      Left = 8
       Height = 14
-      Top = 211
+      Top = 234
       Width = 47
       Caption = 'Thème :'
       ParentColor = False
@@ -381,6 +381,29 @@ object F_WebPlayer: TF_WebPlayer
       State = cbChecked
       UseDockManager = False
     end
+    object de_convertdir: TDirectoryEdit
+      Left = 184
+      Height = 22
+      Top = 206
+      Width = 336
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      TabOrder = 20
+    end
+    object ch_dirconvert: TJvXPCheckbox
+      Left = 7
+      Height = 17
+      Top = 208
+      Width = 177
+      Caption = 'Dossier des conversions'
+      TabOrder = 21
+      Checked = True
+      State = cbChecked
+      UseDockManager = False
+    end
   end
   object ch_OGG: TJvXPCheckbox
     Left = 64
@@ -432,7 +455,7 @@ object F_WebPlayer: TF_WebPlayer
     Filter = 'Tous les fichiers (*.*)|*.*|Bases Firebird/Interbase (*.fdb,*.gdb)|*.fdb;*.gdb'
     FilterIndex = 0
     Options = [ofHideReadOnly, ofNoNetworkButton, ofViewDetail]
-    left = 424
+    left = 464
     top = 216
   end
   object OnFormInfoIni: TOnFormInfoIni
