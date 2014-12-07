@@ -172,13 +172,13 @@ type
     procedure DoAfterInit(const ab_Ini: Boolean=True);
     function fb_DeleteOrNot(const as_ThemaSource : String; astl_ListFiles: TStrings): Boolean;
     function fstl_CreateListToDelete ( const as_ThemaSource : String ): TStringListUTF8;
-    function fb_AddFiles ( const as_Source, as_artist, as_subdirForward : String ;
+    procedure p_AddFiles ( const as_Source, as_artist, as_subdirForward : String ;
                            const astl_files : TStrings;
                            const ai_eraseBegin, ai_Level : Integer;
                            const astl_DirListAudio, astl_temp1,
                                  astl_downloads, astl_downloadsafter , astl_Processes : TStrings;
                            var   ab_first, ab_foundAudio : Boolean;
-                           const ab_Root : Boolean ):boolean;
+                           const ab_Root : Boolean ; var ab_downloadReally : Boolean);
     procedure p_AddToCombo(const acb_combo: TComboBox; const as_Base: String;
       const ab_SetIndex: Boolean=True);
     procedure p_CreateAHtmlFile(const astl_Destination: TStrings;
@@ -260,13 +260,13 @@ end;
 
 const CST_CONVERTED = '-converted';
 
-function TF_WebPlayer.fb_AddFiles ( const as_Source, as_artist, as_subdirForward : String ;
+procedure TF_WebPlayer.p_AddFiles ( const as_Source, as_artist, as_subdirForward : String ;
                                     const astl_files : TStrings;
                                     const ai_eraseBegin, ai_Level : Integer;
                                     const astl_DirListAudio, astl_temp1,
                                           astl_downloads, astl_downloadsafter, astl_Processes : TStrings;
                                     var   ab_first, ab_foundAudio : Boolean;
-                                    const ab_Root : Boolean ):boolean;
+                                    const ab_Root : Boolean ; var ab_downloadReally : Boolean);
 var li_EndExt : Integer ;
     ls_Source ,
     ls_SourceMini ,
@@ -277,6 +277,8 @@ var li_EndExt : Integer ;
     lb_first : Boolean;
     li_pos : Integer;
     lstl_temp2 : TStringListUTF8 ;
+
+    // mini ls_source
     procedure p_MiniSource;
     Begin
       {$IFDEF WINDOWS}
@@ -287,12 +289,15 @@ var li_EndExt : Integer ;
 
     end;
 
+    // replace string for a line of music
     procedure p_replaceAllCase ( const ai_pos : Integer ; const as_Ext : String );
      Begin
        p_ReplaceLanguageString(astl_temp1,'Source',ls_Source,[rfReplaceAll]);
        p_ReplaceLanguageString(astl_temp1,'SourceTitle',copy(ls_FileName,1,ai_pos-1),[rfReplaceAll]);
        p_ReplaceLanguageString(astl_temp1,'Type','audio/'+as_Ext,[rfReplaceAll]);
      end;
+
+    // Add a download to music download list
     procedure p_addDownload ( const astl_downloadList : TStrings ; const ai_pos : Integer ; const as_Ext : String ); overload;
     Begin
       p_LoadStringList ( astl_temp1,  CST_DOWNLOAD_FILE+CST_EXTENSION_HTML );
@@ -303,12 +308,13 @@ var li_EndExt : Integer ;
       astl_downloadList.AddStrings(astl_temp1);
     end;
 
+    // Add a archive download to archive download list
     procedure p_addDownload ( const astl_downloadList : TStrings ; const as_Ext : String ); overload;
     var li_pos : Integer;
     Begin
       li_pos := PosEx ( as_Ext, ls_FileNameLower, li_EndExt );
       if li_pos = 0 Then Exit;
-      Result := True;
+      ab_downloadReally := True;
       p_LoadStringList ( astl_temp1,  CST_DOWNLOAD_FILE+CST_EXTENSION_HTML );
       p_MiniSource;
       p_replaceAllCase ( li_pos, as_Ext );
@@ -428,7 +434,6 @@ var li_EndExt : Integer ;
 
 begin
   astl_temp1.Clear ;
-  Result := False;
   lstl_temp2 := TStringListUTF8.Create;
   try
    if fb_FindFiles ( lstl_temp2, as_Source, True, True, True, '*' ) Then
@@ -448,7 +453,7 @@ begin
              Else ls_SourceMini := '';
             if ( ai_Level = 1 ) Then
               ab_foundAudio:=False;
-            Result := fb_AddFiles ( ls_Source, ls_SourceMini, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_downloadsafter, astl_Processes, ab_first, ab_foundAudio, ab_Root ) or Result;
+            p_AddFiles ( ls_Source, ls_SourceMini, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_downloadsafter, astl_Processes, ab_first, ab_foundAudio, ab_Root, ab_downloadReally );
             if  ab_foundAudio
             and ( ai_Level = 1 ) // p_genHtmlHome will recall this recursive function
             and ch_IndexAll.Checked Then
@@ -801,7 +806,6 @@ var
   procedure p_addRoot;
   var ls_IndexDir, ls_subdir : String ;
   Begin
-    lstl_HTMLDownloads.clear;
     p_LoadStringList(lstl_HTMLDownloads,CST_INDEX_BUTTON+CST_EXTENSION_HTML);
     ls_IndexDir := copy ( as_directory, 1, Length(as_directory) - 1 );
     ls_subdir := '';
@@ -822,6 +826,7 @@ begin
   lstl_HTMLDownloads := TStringListUTF8.Create;
   lstl_Temp1         := TStringListUTF8.Create;
   p_addRoot;
+  lb_downloadReally := False;
   if ab_Root
   and ch_convert.Checked Then
    lstl_processes := TStringListUTF8.Create;
@@ -834,7 +839,7 @@ begin
     li_PathToDelete := Length(as_directory)+1;
     try
       lb_foundaudio := False;
-      lb_downloadReally := fb_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownloads,lstl_downloadsAfter, lstl_processes, lb_first, lb_foundaudio, ab_Root );
+      p_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownloads,lstl_downloadsAfter, lstl_processes, lb_first, lb_foundaudio, ab_Root, lb_downloadReally );
     finally
       lstl_Temp1.Free;
     end;
@@ -847,6 +852,7 @@ begin
          as_artist + ' - ' + gs_WebPlayer_Downloads , gs_WebPlayer_Downloads, '', '');
       p_ReplaceLanguageString(lstl_HTMLDownloads,'SubDir',as_subdirForward,[rfReplaceAll]);
       p_saveFile(lstl_HTMLDownloads,gs_WebPlayer_Phase + gs_WebPlayer_Downloads,as_directory + ed_DownLoadName.Text + CST_EXTENSION_HTML);
+      Exit;
       if as_subdirForward= '' Then
         Begin
          p_addRoot;
