@@ -809,11 +809,10 @@ var
     p_LoadStringList(lstl_HTMLDownloads,CST_INDEX_BUTTON+CST_EXTENSION_HTML);
     ls_IndexDir := copy ( as_directory, 1, Length(as_directory) - 1 );
     ls_subdir := '';
-    while (pos ( DirectorySeparator, ls_IndexDir ) > 0) and not FileExistsUTF8(ls_IndexDir+DirectorySeparator+ed_IndexName.Text+CST_EXTENSION_HTML) do
-     Begin
+    repeat    // back to previous dir
       AppendStr ( ls_subdir, '../' );
       ls_IndexDir := ExtractSubDir ( ls_IndexDir );
-     End;
+    until (pos ( DirectorySeparator, ls_IndexDir ) = 0) or FileExistsUTF8(ls_IndexDir+DirectorySeparator+ed_IndexName.Text+CST_EXTENSION_HTML);
     p_ReplaceLanguageString(lstl_HTMLDownloads,'Link',ls_subdir+ed_IndexName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
     p_ReplaceLanguageString(lstl_HTMLDownloads,'Caption',gs_WebPlayer_Back,[rfReplaceAll]);
   End;
@@ -856,18 +855,18 @@ begin
          as_artist + ' - ' + gs_WebPlayer_Downloads , gs_WebPlayer_Downloads, '', '');
       p_ReplaceLanguageString(lstl_HTMLDownloads,'SubDir',as_subdirForward,[rfReplaceAll]);
       p_saveFile(lstl_HTMLDownloads,gs_WebPlayer_Phase + gs_WebPlayer_Downloads,as_directory + ed_DownLoadName.Text + CST_EXTENSION_HTML);
-      Exit;
-      if as_subdirForward= '' Then
-        Begin
-         p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownloads.Text+'[ButtonsToAdd]',[rfReplaceAll]);
-        End
-       Else
-        Begin
-          p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownloads.Text+#10+'[ButtonsToAdd]',[rfReplaceAll]);
-          p_addRoot;
-          p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownloads.Text+'[ButtonsToAdd]',[rfReplaceAll]);
-        End;
+      p_LoadStringList ( lstl_HTMLDownloads, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
+      p_ReplaceLanguageString(lstl_HTMLDownloads,'Link',ed_DownLoadName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
+      p_ReplaceLanguageString(lstl_HTMLDownloads,'Caption',gs_WebPlayer_Downloads,[rfReplaceAll]);
+      //adding download button to index
+      p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownloads.Text+#10+'[ButtonsToAdd]',[rfReplaceAll]);
     End;
+   //adding
+   if as_subdirForward > '' Then
+    Begin
+     p_addRoot;
+     p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownloads.Text+'[ButtonsToAdd]',[rfReplaceAll]);
+    end;
     if lstl_ListDirAudio.Count>0 Then
       Begin
        lstl_DirList := TStringListUTF8.Create;
