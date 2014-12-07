@@ -825,7 +825,11 @@ begin
   lstl_processes    := TStringListUTF8.Create;
   lstl_HTMLDownloads := TStringListUTF8.Create;
   lstl_Temp1         := TStringListUTF8.Create;
-  p_addRoot;
+  p_LoadStringList ( lstl_HTMLBody, CST_INDEX_BUTTON+CST_EXTENSION_HTML );
+  p_ReplaceLanguageString(lstl_HTMLBody,'Link',ed_IndexName.Text+CST_EXTENSION_HTML,[rfReplaceAll]);
+  p_ReplaceLanguageString(lstl_HTMLBody,'Caption',gs_WebPlayer_Back,[rfReplaceAll]);
+  lstl_HTMLDownloads.AddStrings(lstl_HTMLBody);
+  lstl_HTMLBody.clear;
   lb_downloadReally := False;
   if ab_Root
   and ch_convert.Checked Then
@@ -855,7 +859,6 @@ begin
       Exit;
       if as_subdirForward= '' Then
         Begin
-         p_addRoot;
          p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd',lstl_HTMLDownloads.Text+'[ButtonsToAdd]',[rfReplaceAll]);
         End
        Else
