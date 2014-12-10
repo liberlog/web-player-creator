@@ -833,7 +833,7 @@ var
   lstl_HTMLHome,lstl_HTMLBody,lstl_HTMLDownloads,
   lstl_DirList,lstl_DirLine,lstl_ListDirAudio,
   lstl_downloadsAfter, lstl_processes : TStringListUTF8;
-  ls_destination: string;
+  ls_destination,ls_htmlpath: string;
   ls_Images: string;
   li_Count, li_PathToDelete: integer;
   lb_first, lb_foundaudio, lb_downloadReally : boolean;
@@ -940,11 +940,17 @@ begin
         p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd','',[rfReplaceAll]);
       end;
     if ch_txt.checked
-     Then p_ReplaceLanguageString(lstl_HTMLBody,'Describe',CST_ENDOFLINE
-     +'<script type="text/javascript">'+CST_ENDOFLINE
-     +'if (!readText ( "'+ed_txtName.Text+'"+language+".txt"))'+CST_ENDOFLINE
-     +'{document.write( "'
-      +StringReplace(fs_html_Lines(me_Description.Text,''), '"', '''',[rfReplaceAll])+'");}</script>'+CST_ENDOFLINE)
+     Then
+      Begin
+       if as_directory=''
+        Then ls_htmlpath:='/'
+        else ls_htmlpath:=copy(as_directory,Length(AppendPathDelim(de_indexdir.Directory)),Length(as_directory));
+       p_ReplaceLanguageString(lstl_HTMLBody,'Describe',CST_ENDOFLINE
+         +'<script type="text/javascript">'+CST_ENDOFLINE
+         +'readText ( "'+ed_txtName.Text+'."+language+".txt");'+CST_ENDOFLINE
+         +'document.write( "'
+          +StringReplace(fs_html_Lines(me_Description.Text,''), '"', '''',[rfReplaceAll])+'");</script>'+CST_ENDOFLINE)
+      end
       else p_ReplaceLanguageString(lstl_HTMLBody,'Describe',fs_html_Lines(me_Description.Text ));
     lstl_HTMLHome.AddStrings(lstl_HTMLBody);
     lstl_HTMLBody.Clear;
