@@ -10,31 +10,16 @@ Pourquoi ? Parce que tout simplement les développeur de chez Micro$oft ont "oub
 else
 var language = navigator.language;
 
-// tests if file exists
-function fileExists(yourPath)
-	{
-	var tmp=new Image;
-	tmp.src=yourPath;
-	return tmp.complete;
-	}
 
 /* write text file */
 function readText(afile)
 	{
-	if (fileExists(afile))
-			{
 				var reader = new FileReader();
 				
 				reader.onload = function (e) {  
 					var output=e.target.result;
-					document.write( output );
+					document.write( output +'<BR>');
                     }
-		        reader.readAsText(afile);
 				return true;
-            }
-		else
-			{
-				return false;
-			}
 	}
 
