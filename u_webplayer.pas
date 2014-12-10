@@ -124,12 +124,14 @@ type
     ch_WMA: TJvXPCheckbox;
     ch_IndexAll: TJvXPCheckbox;
     ch_ZIP: TJvXPCheckbox;
+    ch_TXT: TJvXPCheckbox;
     ch_7ZIP: TJvXPCheckbox;
     de_indexdir: TDirectoryEdit;
     de_convertdir: TDirectoryEdit;
     ed_Author: TEdit;
     ed_IndexName: TEdit;
     ed_DownLoadName: TEdit;
+    ed_TXTName: TEdit;
     FileCopy: TExtFileCopy;
     ds_Individu: TDatasource;
     FileIniCopy: TExtFileCopy;
@@ -143,6 +145,7 @@ type
     Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
+    Label13: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label44: TLabel;
@@ -184,7 +187,7 @@ type
     procedure p_AddToCombo(const acb_combo: TComboBox; const as_Base: String;
       const ab_SetIndex: Boolean=True);
     procedure p_CreateAHtmlFile(const astl_Destination: TStrings;
-      const as_BeginingFile, as_Describe, as_Title, as_LittleTitle, as_LongTitle: string;
+      const as_BeginingFile, as_Describe, as_file, as_Title, as_LittleTitle, as_LongTitle: string;
       const as_Subdir: string = '';
       const as_ExtFile: string = CST_EXTENSION_HTML;
       const as_BeforeHTML: string = ''; const astl_Body : TStrings = nil );
@@ -885,6 +888,7 @@ begin
       if ch_downloads.Checked
         Then lstl_HTMLDownloads.AddStrings(lstl_downloadsAfter);
       p_CreateAHtmlFile(lstl_HTMLDownloads, CST_DOWNLOAD, me_Description.Lines.Text,
+         ExtractDirName(as_directory),
          as_artist + ' - ' + gs_WebPlayer_Downloads , gs_WebPlayer_Downloads, '', '');
       p_ReplaceLanguageString(lstl_HTMLDownloads,'SubDir',as_subdirForward,[rfReplaceAll]);
       p_saveFile(lstl_HTMLDownloads,gs_WebPlayer_Phase + gs_WebPlayer_Downloads,as_directory + ed_DownLoadName.Text + CST_EXTENSION_HTML);
@@ -935,10 +939,17 @@ begin
         p_ReplaceLanguageString(lstl_HTMLBody,'DirList','',[rfReplaceAll]);
         p_ReplaceLanguageString(lstl_HTMLBody,'ButtonsToAdd','',[rfReplaceAll]);
       end;
-    p_ReplaceLanguageString(lstl_HTMLBody,'Describe',fs_Format_Lines(me_Description.Text ));
+    if ch_txt.checked
+     Then p_ReplaceLanguageString(lstl_HTMLBody,'Describe',CST_ENDOFLINE
+     +'<script type="text/javascript">'+CST_ENDOFLINE
+     +'if (!readText ( "'+ed_txtName.Text+'"+language+".txt"))'+CST_ENDOFLINE
+     +'{document.write( "'
+      +StringReplace(fs_html_Lines(me_Description.Text,''), '"', '''',[rfReplaceAll])+'");}</script>'+CST_ENDOFLINE)
+      else p_ReplaceLanguageString(lstl_HTMLBody,'Describe',fs_html_Lines(me_Description.Text ));
     lstl_HTMLHome.AddStrings(lstl_HTMLBody);
     lstl_HTMLBody.Clear;
-    p_CreateAHtmlFile(lstl_HTMLHome, CST_INDEX, me_Description.Lines.Text,
+    p_CreateAHtmlFile(lstl_HTMLHome, CST_INDEX, me_Description.Text,
+      ExtractDirName(as_directory),
       as_artist , gs_WebPlayer_Home, '', '');
     p_ReplaceLanguageString(lstl_HTMLHome,'SubDir',as_subdirForward,[rfReplaceAll]);
     // saving the page
@@ -990,7 +1001,7 @@ end;
 // Creating a HTML page from parameters
 procedure TF_WebPlayer.p_CreateAHtmlFile(const astl_Destination: TStrings;
   const as_BeginingFile,
-  as_Describe, as_Title, as_LittleTitle, as_LongTitle: string;
+  as_Describe, as_file, as_Title, as_LittleTitle, as_LongTitle: string;
   const as_Subdir: string = '';
   const as_ExtFile: string =
   CST_EXTENSION_HTML;
@@ -1003,7 +1014,8 @@ begin
    Then ls_title := 'Lazarus Web Player'
    else ls_title := 'Lazarus Web Player - '+as_Title;
   p_CreateHTMLFile(nil, astl_Destination, '',
-    as_Describe, gstl_HeadKeyWords.Text, ls_Title,
+     as_Describe,
+     gstl_HeadKeyWords.Text, ls_Title,
     as_LongTitle, as_BeginingFile + '1' + as_ExtFile, as_BeginingFile + '2' +
     as_ExtFile, as_BeginingFile + '3' + as_ExtFile, as_BeginingFile +
     '4' + as_ExtFile, as_Subdir, as_BeforeHTML, gs_WebPlayer_Language, astl_Body, False );
