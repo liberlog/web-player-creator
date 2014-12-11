@@ -98,13 +98,17 @@ const CST_WebPlayer = 'PlayerCreator' ;
       CST_EXTENSION_MP3_MINI = 'mp3';
       CST_EXTENSION_WMA_MINI = 'wma';
       CST_EXTENSION_ZIP_MINI = 'zip';
+      CST_EXTENSION_TXT_MINI = 'txt';
       CST_EXTENSION_7Z_MINI   = '7z';
+      CST_EXTENSION_JS_MINI   = 'js';
       CST_EXTENSION_PNG = '.'+CST_EXTENSION_PNG_MINI;
       CST_EXTENSION_OGG = '.'+CST_EXTENSION_OGG_MINI;
       CST_EXTENSION_MP3 = '.'+CST_EXTENSION_MP3_MINI;
       CST_EXTENSION_WMA = '.'+CST_EXTENSION_WMA_MINI;
       CST_EXTENSION_ZIP = '.'+CST_EXTENSION_ZIP_MINI;
+      CST_EXTENSION_TXT = '.'+CST_EXTENSION_TXT_MINI;
       CST_EXTENSION_7Z  = '.'+CST_EXTENSION_7Z_MINI;
+      CST_EXTENSION_JS  = '.'+CST_EXTENSION_JS_MINI;
       CST_SCRIPT_FILE   = 'conversion';
 
 type
@@ -314,6 +318,20 @@ var li_EndExt : Integer ;
       astl_downloadList.AddStrings(astl_temp1);
     end;
 
+    // Add a download to music download list
+    procedure p_addText ( const as_filename : String ); overload;
+    var lstl_Text : TStringList;
+    Begin
+      lstl_Text:=TStringList.Create;
+      try
+        lstl_Text.LoadFromFile(as_filename);
+        lstl_Text.Text:='document.write("'+StringReplace(StringReplace(lstl_Text.Text,CST_ENDOFLINE,'<br>',[rfReplaceAll]),'"','\"',[rfReplaceAll])+'");';
+        lstl_Text.SaveToFile(as_filename+CST_EXTENSION_JS);
+      finally
+        lstl_Text.Destroy;
+      end;
+    end;
+
     // Add a archive download to archive download list
     procedure p_addDownload ( const astl_downloadList : TStrings ; const as_Ext : String ); overload;
     var li_pos : Integer;
@@ -509,6 +527,10 @@ begin
 
                p_addFile( ch_MP3.Checked, CST_EXTENSION_MP3 );
                p_addFile( ch_WMA.Checked, CST_EXTENSION_WMA );
+              if ch_TXT.Checked
+              and (pos ( CST_EXTENSION_TXT, ls_FileNameLower ) >= li_EndExt)
+              and (pos ( ed_TXTName.Text  , ls_FileNameLower ) = 1 ) Then
+                p_addText ( ls_Source );
               if ch_ZIP.Checked
               and (pos ( CST_EXTENSION_ZIP, ls_FileNameLower ) >= li_EndExt) Then
                 p_addDownload ( astl_downloads, CST_EXTENSION_ZIP);
@@ -596,6 +618,7 @@ var ls_Source, ls_ToAdd : String;
 begin
   if gb_Generate then
     Exit;
+  ed_TXTName.Text:=LowerCase(ed_TXTName.Text);
   p_genUnGenPrepare ( ls_Source );
   if ch_IndexAll.Checked
    Then ls_ToAdd := gs_WebPlayer_Delete_File
@@ -672,6 +695,8 @@ begin
    End
   Else
    lb_DestroyList := False;
+  if ch_TXT.Checked Then
+   astl_ListFiles.Add(ed_TXTName.Text+'*'+CST_EXTENSION_TXT+CST_EXTENSION_JS);
   try
     Result := MessageDlg(gs_WebPlayer_Delete_File,fs_RemplaceMsg(gs_WebPlayer_Delete_Files_confirm,
                     [gs_RootPathForExport,ls_ToAdd,astl_ListFiles.Text]),
@@ -731,7 +756,9 @@ begin
         p_Unindex(as_directory+lstl_FilesToVerify[0]+DirectorySeparator,astl_List1ToUnindex)
        Else
         Begin
-         if astl_List1ToUnindex.IndexOf(lstl_FilesToVerify[0]) > -1
+         if (astl_List1ToUnindex.IndexOf(lstl_FilesToVerify[0]) > -1)
+         or  (  ch_TXT.Checked and (pos(ed_TXTName.Text,lstl_FilesToVerify[0])=1)
+                and (pos ( CST_EXTENSION_TXT+CST_EXTENSION_JS,lstl_FilesToVerify[0])>Length(lstl_FilesToVerify[0])-8))
           Then
             DeleteFileUTF8(as_directory+lstl_FilesToVerify[0])
         end;
@@ -946,10 +973,8 @@ begin
         Then ls_htmlpath:='/'
         else ls_htmlpath:=copy(as_directory,Length(AppendPathDelim(de_indexdir.Directory)),Length(as_directory));
        p_ReplaceLanguageString(lstl_HTMLBody,'Describe',CST_ENDOFLINE
-         +'<script type="text/javascript">'+CST_ENDOFLINE
-         +'readText ( "'+ed_txtName.Text+'."+language+".txt");'+CST_ENDOFLINE
-         +'document.write( "'
-          +StringReplace(fs_html_Lines(me_Description.Text,''), '"', '''',[rfReplaceAll])+'");</script>'+CST_ENDOFLINE)
+         +'<script type="text/javascript">includeJS( "'+ed_txtName.Text+'."+language+"'+CST_EXTENSION_TXT+CST_EXTENSION_JS+'");'+CST_ENDOFLINE
+         +'</script>'+CST_ENDOFLINE+fs_html_Lines(me_Description.Text ))
       end
       else p_ReplaceLanguageString(lstl_HTMLBody,'Describe',fs_html_Lines(me_Description.Text ));
     lstl_HTMLHome.AddStrings(lstl_HTMLBody);

@@ -10,16 +10,9 @@ Pourquoi ? Parce que tout simplement les développeur de chez Micro$oft ont "oub
 else
 var language = navigator.language;
 
-
-/* write text file */
-function readText(afile)
-	{
-				var reader = new FileReader();
-				
-				reader.onload = function (e) {  
-					var output=e.target.result;
-					document.write( output +'<BR>');
-                    }
-				return true;
-	}
+function includeJS(incFile)
+{
+  document.write('<script type="text/javascript" src="'+ incFile+ '"></script>'); 
+}
+      
 
