@@ -325,7 +325,7 @@ var li_EndExt : Integer ;
       lstl_Text:=TStringList.Create;
       try
         lstl_Text.LoadFromFile(as_filename);
-        lstl_Text.Text:='document.write("'+StringReplace(StringReplace(lstl_Text.Text,CST_ENDOFLINE,'<br>',[rfReplaceAll]),'"','\"',[rfReplaceAll])+'");';
+        lstl_Text.Text:='document.write("'+StringReplace(fs_html_Lines(lstl_Text.Text,''),'"','\"',[rfReplaceAll])+'");';
         lstl_Text.SaveToFile(as_filename+CST_EXTENSION_JS);
       finally
         lstl_Text.Destroy;
