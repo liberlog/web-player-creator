@@ -528,8 +528,8 @@ begin
                p_addFile( ch_MP3.Checked, CST_EXTENSION_MP3 );
                p_addFile( ch_WMA.Checked, CST_EXTENSION_WMA );
               if ch_TXT.Checked
-              and (pos ( CST_EXTENSION_TXT, ls_FileNameLower ) >= li_EndExt)
-              and (pos ( ed_TXTName.Text  , ls_FileNameLower ) = 1 ) Then
+              and (pos ( CST_EXTENSION_TXT  , ls_FileNameLower ) >= li_EndExt)
+              and (pos ( ed_TXTName.Text+'.', ls_FileNameLower ) = 1 ) Then
                 p_addText ( ls_Source );
               if ch_ZIP.Checked
               and (pos ( CST_EXTENSION_ZIP, ls_FileNameLower ) >= li_EndExt) Then
@@ -696,7 +696,7 @@ begin
   Else
    lb_DestroyList := False;
   if ch_TXT.Checked Then
-   astl_ListFiles.Add(ed_TXTName.Text+'*'+CST_EXTENSION_TXT+CST_EXTENSION_JS);
+   astl_ListFiles.Add(ed_TXTName.Text+'.*'+CST_EXTENSION_TXT+CST_EXTENSION_JS);
   try
     Result := MessageDlg(gs_WebPlayer_Delete_File,fs_RemplaceMsg(gs_WebPlayer_Delete_Files_confirm,
                     [gs_RootPathForExport,ls_ToAdd,astl_ListFiles.Text]),
@@ -757,7 +757,7 @@ begin
        Else
         Begin
          if (astl_List1ToUnindex.IndexOf(lstl_FilesToVerify[0]) > -1)
-         or  (  ch_TXT.Checked and (pos(ed_TXTName.Text,lstl_FilesToVerify[0])=1)
+         or  (  ch_TXT.Checked and (pos(ed_TXTName.Text+'.',lstl_FilesToVerify[0])=1)
                 and (pos ( CST_EXTENSION_TXT+CST_EXTENSION_JS,lstl_FilesToVerify[0])>Length(lstl_FilesToVerify[0])-8))
           Then
             DeleteFileUTF8(as_directory+lstl_FilesToVerify[0])
