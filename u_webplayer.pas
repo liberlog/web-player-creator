@@ -303,7 +303,7 @@ var li_EndExt : Integer ;
     procedure p_replaceAllCase ( const ai_pos : Integer ; const as_Ext : String );
      Begin
        p_ReplaceLanguageString(astl_temp1,'Source',ls_Source,[rfReplaceAll]);
-       p_ReplaceLanguageString(astl_temp1,'SourceTitle',copy(ls_FileName,1,ai_pos-1),[rfReplaceAll]);
+       p_ReplaceLanguageString(astl_temp1,'SourceTitle',copy(StringReplace(ls_FileName,'_',' ',[rfReplaceAll]),1,ai_pos-1),[rfReplaceAll]);
        p_ReplaceLanguageString(astl_temp1,'Type','audio/'+as_Ext,[rfReplaceAll]);
      end;
 
