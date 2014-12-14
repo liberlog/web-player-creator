@@ -353,41 +353,32 @@ var li_EndExt : Integer ;
         li_pos : Integer;
     function fs_MiniPath ( const as_path : String ) : String;
     Begin
-      Result := copy ( as_path, ai_eraseBegin, length ( as_path ) - ai_eraseBegin + 1 );
+      if ai_eraseBegin>length ( as_path )-5
+       Then Result:='../'+ExtractFileName(as_path)
+       Else Result := copy ( as_path, ai_eraseBegin, length ( as_path ) - ai_eraseBegin + 1 );
+    end;
+
+    function fb_ReplaceImgExt ( const as_image : String ; const as_extension : String ) : Boolean;
+    Begin
+      Result := FileExistsUTF8(as_image+as_extension);
+      if Result
+       Then
+        Begin
+         {$IFDEF WINDOWS}
+         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(fs_MiniPath (as_image)+as_extension,DirectorySeparator,'/'),[rfReplaceAll]);
+         {$ELSE}
+         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image)+as_extension,[rfReplaceAll]);
+         {$ENDIF}
+         Exit
+        end;
+      WriteLn(fs_MiniPath (as_image)+as_extension+ ' '+as_image+as_extension);
     end;
 
     function fb_ReplaceImg ( const as_image : String ) : Boolean;
     Begin
-      Result := FileExistsUTF8(as_image+CST_EXTENSION_PNG);
-      if Result
-       Then
-        Begin
-         {$IFDEF WINDOWS}
-         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(fs_MiniPath (as_image)+CST_EXTENSION_PNG,DirectorySeparator,'/'),[rfReplaceAll]);
-         {$ELSE}
-         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image)+CST_EXTENSION_PNG,[rfReplaceAll]);
-         {$ENDIF}
-         Exit
-        end;
-      Result := FileExistsUTF8(as_image+CST_EXTENSION_JPEG);
-      if Result
-       Then
-        Begin
-         {$IFDEF WINDOWS}
-         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(fs_MiniPath (as_image)+CST_EXTENSION_JPEG,DirectorySeparator,'/'),[rfReplaceAll]);
-         {$ELSE}
-         p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image) +CST_EXTENSION_JPEG,[rfReplaceAll]);
-         {$ENDIF}
-          Exit;
-        end;
-      Result := FileExistsUTF8(as_image+CST_EXTENSION_GIF);
-      if Result
-       Then
-        {$IFDEF WINDOWS}
-        p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_RemplaceChar(fs_MiniPath (as_image)+CST_EXTENSION_GIF,DirectorySeparator,'/'),[rfReplaceAll]);
-        {$ELSE}
-        p_ReplaceLanguageString(astl_temp1,'SourcePoster',fs_MiniPath (as_image)+CST_EXTENSION_GIF,[rfReplaceAll]);
-        {$ENDIF}
+      Result := fb_ReplaceImgExt ( as_image,CST_EXTENSION_PNG) or
+                fb_ReplaceImgExt ( as_image,CST_EXTENSION_JPEG) or
+                fb_ReplaceImgExt ( as_image,CST_EXTENSION_GIF);
     End;
     var ls_FileNameWithoutExt : String;
     begin
@@ -408,7 +399,7 @@ var li_EndExt : Integer ;
            p_LoadStringList ( astl_temp1,  CST_INDEX_FILE+CST_EXTENSION_HTML );
            //ShowMessage(as_Source+CST_EXTENSION_PNG+ls_SourceMini +CST_EXTENSION_JPEG+as_Source+DirectorySeparator+as_parent +CST_EXTENSION_JPEG);
            if not fb_ReplaceImg (ls_FileWithoutExt)
-            Then if not fb_ReplaceImg (as_Source)
+            Then if not fb_ReplaceImg (ExcludeTrailingBackslash(as_Source))
              Then if not fb_ReplaceImg(as_Source+ExtractDirName (as_Source ))
               Then
                Begin
