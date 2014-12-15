@@ -125,6 +125,7 @@ type
     ch_dirconvert: TJvXPCheckbox;
     ch_downloads: TJvXPCheckbox;
     ch_convert: TJvXPCheckbox;
+    ch_Names64: TJvXPCheckbox;
     ch_OGG: TJvXPCheckbox;
     ch_WMA: TJvXPCheckbox;
     ch_IndexAll: TJvXPCheckbox;
@@ -298,7 +299,7 @@ procedure TF_WebPlayer.p_AddFiles ( const as_Source, as_artist, as_subdirForward
 var li_EndExt : Integer ;
     ls_Source ,
     ls_SourceConvert ,
-    ls_SourceMini ,
+    ls_DirHtml ,
     ls_FileName ,
     ls_FileNameLower ,
     ls_destination  : String;
@@ -338,6 +339,8 @@ var li_EndExt : Integer ;
       astl_downloadList.AddStrings(astl_temp1);
     end;
 
+    const CST_documentwrite = 'document.write("';
+
     // Add a download to music download list
     procedure p_addText ( const as_filename : String ); overload;
     var lstl_Text : TStringList;
@@ -345,14 +348,37 @@ var li_EndExt : Integer ;
       lstl_Text:=TStringList.Create;
       try
         lstl_Text.LoadFromFile(as_filename);
-        lstl_Text.Text:='document.write("'+StringReplace(fs_html_Lines(lstl_Text.Text,''),'"','\"',[rfReplaceAll])+'");';
+        lstl_Text.Text:=CST_documentwrite+StringReplace(fs_html_Lines(lstl_Text.Text,''),'"','\"',[rfReplaceAll])+'");';
         lstl_Text.SaveToFile(as_filename+CST_EXTENSION_JS);
         as_BackDirText:='';
       finally
         lstl_Text.Destroy;
       end;
     end;
-
+                {
+    // Add a download to music download list
+    procedure p_addOldText ( const as_filename : String ); overload;
+    var lstl_Text : TStringList;
+        ls_file : String;
+    Begin
+      ls_file :=copy(as_filename,1,Length(as_filename)-3);
+      if FileExistsUTF8(ls_file) Then Exit;
+      lstl_Text:=TStringList.Create;
+      try
+        lstl_Text.LoadFromFile(as_filename);
+        lstl_Text.Text:=StringReplace(StringReplace(lstl_Text.Text,'\"','"',[rfReplaceAll]),'<BR>',CST_ENDOFLINE,[rfReplaceAll]);
+        lstl_Text[0]:=copy (lstl_Text[0],length(CST_documentwrite)+1,Length(lstl_Text[0]));
+        lstl_Text[lstl_Text.count-1]:=copy (lstl_Text[lstl_Text.count-1],1,Length([lstl_Text.count-1])-3);
+        if pos ('http://fr.wikipedia.org',lstl_Text[lstl_Text.count-1])>0 Then
+         lstl_Text[lstl_Text.count-1]:='http://fr.wikipedia.org';
+        if pos ('http://fr.wikipedia.org',lstl_Text[lstl_Text.count-2])>0 Then
+         lstl_Text[lstl_Text.count-2]:='http://fr.wikipedia.org';
+        lstl_Text.SaveToFile(ls_file);
+      finally
+        lstl_Text.Destroy;
+      end;
+    end;
+                }
     // Add a archive download to archive download list
     procedure p_addDownload ( const astl_downloadList : TStrings ; const as_Ext : String ); overload;
     var li_pos : Integer;
@@ -374,11 +400,15 @@ var li_EndExt : Integer ;
         ls_FileNameWithoutExt : String;
         li_pos : Integer;
     procedure p_AddExt ( as_ext : String; const as_jplayerLabelFile : String );
+    var ls_source64:String;
     Begin
+      if ch_Names64.Checked
+        Then ls_source64 := copy ( ls_FileNameWithoutExt, 1, 60 )
+        Else ls_source64 := ls_FileNameWithoutExt;
       if fb_FileExitsExtVar(ls_FileWithoutExt,as_ext)
-       Then p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,ls_SourceMini +as_ext,[rfReplaceAll])
+       Then p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,ls_DirHtml+ls_source64 +as_ext,[rfReplaceAll])
        Else if fb_FileExitsExtVar(ls_FileWithoutExt+CST_CONVERTED,as_ext)
-       Then p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,ls_SourceMini +CST_CONVERTED+as_ext,[rfReplaceAll])
+       Then p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,ls_DirHtml+ls_source64 +CST_CONVERTED+as_ext,[rfReplaceAll])
        Else if ch_dirconvert.Checked and fb_FileExitsExtVar(ls_SourceConvert+ls_FileNameWithoutExt,as_ext)
        Then p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,ls_SourceConvert+ls_FileNameWithoutExt+CST_CONVERTED+as_ext,[rfReplaceAll])
        Else p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,'',[rfReplaceAll]);
@@ -425,11 +455,11 @@ var li_EndExt : Integer ;
            ls_FileWithoutExt := copy ( ls_Source, 1, PosEx ( '.', ls_Source, length ( ls_Source ) - 4 ) - 1 );
            ls_FileNameWithoutExt:=ExtractFileName(ls_FileWithoutExt);
            p_MiniSource;
-           ls_SourceMini := copy ( ls_Source, 1, PosEx ( '.', ls_Source, length ( ls_Source ) - 4 ) - 1 );
+           ls_DirHtml := {$IFDEF WINDOWS}fs_RemplaceChar({$ENDIF}copy( ls_Source,1,Length(ls_Source)-Length(ls_FileNameWithoutExt)-4 ){$IFDEF WINDOWS},DirectorySeparator,'/'){$ENDIF};
            if ch_downloads.Checked Then
              p_addDownload ( astl_downloadsAfter, li_pos, as_Ext );
            p_LoadStringList ( astl_temp1,  CST_INDEX_FILE+CST_EXTENSION_HTML );
-           //ShowMessage(as_Source+CST_EXTENSION_PNG+ls_SourceMini +CST_EXTENSION_JPEG+as_Source+DirectorySeparator+as_parent +CST_EXTENSION_JPEG);
+           //ShowMessage(as_Source+CST_EXTENSION_PNG+ls_DirHtml +CST_EXTENSION_JPEG+as_Source+DirectorySeparator+as_parent +CST_EXTENSION_JPEG);
            if not fb_ReplaceImg (ls_FileWithoutExt)
             Then if not fb_ReplaceImg (ExcludeTrailingBackslash(as_Source))
              Then if not fb_ReplaceImg(as_Source+ExtractDirName (as_Source ))
@@ -510,12 +540,14 @@ begin
           Begin
             p_addKeyWord(ls_FileName);
             if as_artist > ''
-             Then ls_SourceMini := as_artist + ' - ' + ls_FileName
-             Else ls_SourceMini := '';
+             Then ls_DirHtml := as_artist + ' - ' + ls_FileName
+             Else ls_DirHtml := '';
             if ( ai_Level = 1 ) Then
               ab_foundAudio:=False;
             ls_BackDirText:=as_BackDirText+'../';
-            p_AddFiles ( ls_Source, ls_SourceMini, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_downloadsafter, astl_Processes, ab_first, ab_foundAudio, ab_Root, ab_downloadReally, ls_BackDirText );
+        //    if ls_FileName='Bach'
+           //  then ShowMessage(ls_BackDirText+' '+as_BackDirText);
+            p_AddFiles ( ls_Source, ls_DirHtml, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_downloadsafter, astl_Processes, ab_first, ab_foundAudio, ab_Root, ab_downloadReally, ls_BackDirText );
             if  ab_foundAudio
             and ( ai_Level = 1 ) // p_genHtmlHome will recall this recursive function
             and ch_IndexAll.Checked Then
@@ -541,6 +573,9 @@ begin
               and (pos ( CST_EXTENSION_TXT  , ls_FileNameLower ) >= li_EndExt)
               and (pos ( ed_TXTName.Text+'.', ls_FileNameLower ) = 1 ) Then
                 p_addText ( ls_Source );
+{              if (pos ( CST_EXTENSION_TXT+CST_EXTENSION_JS  , ls_FileNameLower ) >= li_EndExt-3)
+              and (pos ( ed_TXTName.Text+'.', ls_FileNameLower ) = 1 ) Then
+                p_addOldText ( ls_Source );}
               if ch_ZIP.Checked
               and (pos ( CST_EXTENSION_ZIP, ls_FileNameLower ) >= li_EndExt) Then
                 p_addDownload ( astl_downloads, CST_EXTENSION_ZIP);
