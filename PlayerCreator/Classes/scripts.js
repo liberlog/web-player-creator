@@ -1,3 +1,9 @@
+function splitToString ( atext, splitText )
+{
+if (atext.indexOf ( splitText ) > 0)
+	return atext.substring(0,atext.indexOf (splitText ));
+return atext;
+}
 
 if (navigator.browserLanguage)
 var language = navigator.browserLanguage;
@@ -9,6 +15,9 @@ Pourquoi ? Parce que tout simplement les développeur de chez Micro$oft ont "oub
 
 else
 var language = navigator.language;
+
+language=splitToString (language, "-" );
+language=splitToString (language, "." );
 
 function includeJS(incFile)
 {

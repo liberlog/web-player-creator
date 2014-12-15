@@ -93,6 +93,7 @@ const CST_WebPlayer = 'PlayerCreator' ;
       CST_SUBDIR_FILES = 'Files' + DirectorySeparator;
       CST_SUBDIR_CLASSES = 'Classes' + DirectorySeparator;
       CST_SUBDIR_THEMES = 'Themes' + DirectorySeparator;
+      CST_DESCRIBE = 'Describe';
       CST_EXTENSION_PNG_MINI = 'png';
       CST_EXTENSION_OGG_MINI = 'ogg';
       CST_EXTENSION_MP3_MINI = 'mp3';
@@ -187,7 +188,8 @@ type
                            const astl_DirListAudio, astl_temp1,
                                  astl_downloads, astl_downloadsafter , astl_Processes : TStrings;
                            var   ab_first, ab_foundAudio : Boolean;
-                           const ab_Root : Boolean ; var ab_downloadReally : Boolean);
+                           const ab_Root : Boolean ; var ab_downloadReally : Boolean;
+                           var   as_BackDirText : String);
     procedure p_AddToCombo(const acb_combo: TComboBox; const as_Base: String;
       const ab_SetIndex: Boolean=True);
     procedure p_CreateAHtmlFile(const astl_Destination: TStrings;
@@ -195,7 +197,7 @@ type
       const as_Subdir: string = '';
       const as_ExtFile: string = CST_EXTENSION_HTML;
       const as_BeforeHTML: string = ''; const astl_Body : TStrings = nil );
-    procedure p_genHtmlHome ( const as_directory, as_subdirForward, as_artist : String;
+    procedure p_genHtmlHome ( const as_directory, as_subdirForward, as_artist, as_backDirText : String;
                               const ab_Root : Boolean );
     function  p_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
     procedure p_IncProgress;
@@ -269,13 +271,30 @@ end;
 
 const CST_CONVERTED = '-converted';
 
+function fb_FileExitsExt ( const as_FileWithoutExt, as_extMini : String ): Boolean;
+Begin
+  Result:=FileExistsUTF8(as_FileWithoutExt+as_extMini) or FileExistsUTF8(as_FileWithoutExt+UpperCase(as_extMini));
+end;
+
+function fb_FileExitsExtVar ( const as_FileWithoutExt : String ; var as_extMini : String ): Boolean;
+Begin
+  Result:=FileExistsUTF8(as_FileWithoutExt+as_extMini);
+  if not Result Then
+   Begin
+    Result := FileExistsUTF8(as_FileWithoutExt+UpperCase(as_extMini));
+    if Result Then
+     as_extMini:=UpperCase(as_extMini);
+   end;
+end;
+
 procedure TF_WebPlayer.p_AddFiles ( const as_Source, as_artist, as_subdirForward : String ;
                                     const astl_files : TStrings;
                                     const ai_eraseBegin, ai_Level : Integer;
                                     const astl_DirListAudio, astl_temp1,
                                           astl_downloads, astl_downloadsafter, astl_Processes : TStrings;
                                     var   ab_first, ab_foundAudio : Boolean;
-                                    const ab_Root : Boolean ; var ab_downloadReally : Boolean);
+                                    const ab_Root : Boolean ; var ab_downloadReally : Boolean;
+                                    var  as_BackDirText : String );
 var li_EndExt : Integer ;
     ls_Source ,
     ls_SourceConvert ,
@@ -286,6 +305,7 @@ var li_EndExt : Integer ;
     lsr_AttrSource      : Tsearchrec;
     lb_first : Boolean;
     li_pos : Integer;
+    ls_BackDirText:String;
     lstl_temp2 : TStringListUTF8 ;
 
     // mini ls_source
@@ -327,6 +347,7 @@ var li_EndExt : Integer ;
         lstl_Text.LoadFromFile(as_filename);
         lstl_Text.Text:='document.write("'+StringReplace(fs_html_Lines(lstl_Text.Text,''),'"','\"',[rfReplaceAll])+'");';
         lstl_Text.SaveToFile(as_filename+CST_EXTENSION_JS);
+        as_BackDirText:='';
       finally
         lstl_Text.Destroy;
       end;
@@ -349,8 +370,20 @@ var li_EndExt : Integer ;
     end;
 
     procedure p_addFile( const ab_add : Boolean; const as_Ext : String );
-    var ls_FileWithoutExt : String;
+    var ls_FileWithoutExt     ,
+        ls_FileNameWithoutExt : String;
         li_pos : Integer;
+    procedure p_AddExt ( as_ext : String; const as_jplayerLabelFile : String );
+    Begin
+      if fb_FileExitsExtVar(ls_FileWithoutExt,as_ext)
+       Then p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,ls_SourceMini +as_ext,[rfReplaceAll])
+       Else if fb_FileExitsExtVar(ls_FileWithoutExt+CST_CONVERTED,as_ext)
+       Then p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,ls_SourceMini +CST_CONVERTED+as_ext,[rfReplaceAll])
+       Else if ch_dirconvert.Checked and fb_FileExitsExtVar(ls_SourceConvert+ls_FileNameWithoutExt,as_ext)
+       Then p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,ls_SourceConvert+ls_FileNameWithoutExt+CST_CONVERTED+as_ext,[rfReplaceAll])
+       Else p_ReplaceLanguageString(astl_temp1,as_jplayerLabelFile,'',[rfReplaceAll]);
+    end;
+
     function fs_MiniPath ( const as_path : String ) : String;
     Begin
       if ai_eraseBegin>length ( as_path )-5
@@ -371,7 +404,7 @@ var li_EndExt : Integer ;
          {$ENDIF}
          Exit
         end;
-      WriteLn(fs_MiniPath (as_image)+as_extension+ ' '+as_image+as_extension);
+      //WriteLn(fs_MiniPath (as_image)+as_extension+ ' '+as_image+as_extension);
     end;
 
     function fb_ReplaceImg ( const as_image : String ) : Boolean;
@@ -380,7 +413,6 @@ var li_EndExt : Integer ;
                 fb_ReplaceImgExt ( as_image,CST_EXTENSION_JPEG) or
                 fb_ReplaceImgExt ( as_image,CST_EXTENSION_GIF);
     End;
-    var ls_FileNameWithoutExt : String;
     begin
       li_pos := PosEx ( as_Ext, ls_FileNameLower, li_EndExt );
       if ab_add and ( li_pos > 0 )
@@ -390,10 +422,10 @@ var li_EndExt : Integer ;
            if ( ai_Level > 1 ) Then
              ab_foundAudio:=True;
            //get the file without extension to filter with extension
-           ls_FileWithoutExt := copy ( ls_Source, 1, PosEx ( as_Ext, ls_Source, length ( ls_Source ) - 4 ) - 1 );
+           ls_FileWithoutExt := copy ( ls_Source, 1, PosEx ( '.', ls_Source, length ( ls_Source ) - 4 ) - 1 );
            ls_FileNameWithoutExt:=ExtractFileName(ls_FileWithoutExt);
            p_MiniSource;
-           ls_SourceMini := copy ( ls_Source, 1, PosEx ( as_Ext, ls_Source, length ( ls_Source ) - 4 ) - 1 );
+           ls_SourceMini := copy ( ls_Source, 1, PosEx ( '.', ls_Source, length ( ls_Source ) - 4 ) - 1 );
            if ch_downloads.Checked Then
              p_addDownload ( astl_downloadsAfter, li_pos, as_Ext );
            p_LoadStringList ( astl_temp1,  CST_INDEX_FILE+CST_EXTENSION_HTML );
@@ -408,51 +440,37 @@ var li_EndExt : Integer ;
            if ch_convert.Checked
            and ab_Root Then
             Begin
-             if  FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_MP3)
-             and not FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_OGG)
-             and not FileExistsUTF8(ls_FileWithoutExt+CST_CONVERTED+CST_EXTENSION_OGG)
-             and ch_dirconvert.Checked and not FileExistsUTF8(ls_SourceConvert+ls_FileNameWithoutExt+CST_EXTENSION_OGG)
+             if  fb_FileExitsExt(ls_FileWithoutExt,CST_EXTENSION_MP3)
+             and not fb_FileExitsExt(ls_FileWithoutExt,CST_EXTENSION_OGG)
+             and not fb_FileExitsExt(ls_FileWithoutExt+CST_CONVERTED,CST_EXTENSION_OGG)
+             and ch_dirconvert.Checked and not fb_FileExitsExt(ls_SourceConvert+ls_FileNameWithoutExt,CST_EXTENSION_OGG)
               Then
               Begin
                 if ch_dirconvert.Checked
                  Then
                   Begin
                    fb_CreateDirectoryStructure(ls_SourceConvert);
-                   astl_Processes.add ('avconv -i "'+StringReplace(ls_FileWithoutExt+CST_EXTENSION_MP3,'"','\"',[rfReplaceAll])+'" "'
+                   astl_Processes.add ('avconv -i "'+StringReplace(ls_Source,'"','\"',[rfReplaceAll])+'" "'
                                                  +StringReplace(ls_SourceConvert+ls_FileNameWithoutExt+CST_EXTENSION_OGG,'"','\"',[rfReplaceAll])+'"');
                   end
                  else
-                  astl_Processes.add ('avconv -i "'+StringReplace(ls_FileWithoutExt+CST_EXTENSION_MP3,'"','\"',[rfReplaceAll])+'" "'
+                  astl_Processes.add ('avconv -i "'+StringReplace(ls_Source,'"','\"',[rfReplaceAll])+'" "'
                                                 +StringReplace(ls_FileWithoutExt+CST_CONVERTED+CST_EXTENSION_OGG,'"','\"',[rfReplaceAll])+'"');
               end;
             end;
-           if FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_OGG)
-            Then p_ReplaceLanguageString(astl_temp1,'SourceOGG',ls_SourceMini +CST_EXTENSION_OGG,[rfReplaceAll])
-            Else if FileExistsUTF8(ls_FileWithoutExt+CST_CONVERTED+CST_EXTENSION_OGG)
-            Then p_ReplaceLanguageString(astl_temp1,'SourceOGG',ls_SourceMini +CST_CONVERTED+CST_EXTENSION_OGG,[rfReplaceAll])
-            Else if ch_dirconvert.Checked and FileExistsUTF8(ls_SourceConvert+ls_FileNameWithoutExt+CST_EXTENSION_OGG)
-            Then p_ReplaceLanguageString(astl_temp1,'SourceOGG',ls_SourceConvert+ls_FileNameWithoutExt+CST_CONVERTED+CST_EXTENSION_OGG,[rfReplaceAll])
-            Else p_ReplaceLanguageString(astl_temp1,'SourceOGG','',[rfReplaceAll]);
+           p_AddExt (CST_EXTENSION_OGG,'SourceOGG');
            if ab_Root
            and ch_convert.Checked
-           and FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_OGG)
-           and not FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_MP3)
-           and not FileExistsUTF8(ls_FileWithoutExt+CST_CONVERTED+CST_EXTENSION_MP3)
+           and fb_FileExitsExt(ls_FileWithoutExt,CST_EXTENSION_OGG)
+           and not fb_FileExitsExt(ls_FileWithoutExt,CST_EXTENSION_MP3)
+           and not fb_FileExitsExt(ls_FileWithoutExt+CST_CONVERTED,CST_EXTENSION_MP3)
             Then
              Begin
               astl_Processes.add ('avconv -i "'+StringReplace(ls_FileWithoutExt+CST_EXTENSION_OGG,'"','\"',[rfReplaceAll])+'" -c:a libmp3lame -q:a '+IntToStr(sp_Mp3Quality.Value)+' "'
                                              +StringReplace(ls_FileWithoutExt+CST_CONVERTED+CST_EXTENSION_MP3,'"','\"',[rfReplaceAll])+'"');
             end;
-           if FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_MP3)
-            Then p_ReplaceLanguageString(astl_temp1,'SourceMP3',ls_SourceMini +CST_EXTENSION_MP3,[rfReplaceAll])
-            Else if FileExistsUTF8(ls_FileWithoutExt+CST_CONVERTED+CST_EXTENSION_MP3)
-            Then p_ReplaceLanguageString(astl_temp1,'SourceMP3',ls_SourceMini +CST_CONVERTED+CST_EXTENSION_MP3,[rfReplaceAll])
-            Else if ch_dirconvert.Checked and FileExistsUTF8(ls_SourceConvert+ls_FileNameWithoutExt+CST_EXTENSION_MP3)
-            Then p_ReplaceLanguageString(astl_temp1,'SourceMP3',ls_SourceConvert+ls_FileNameWithoutExt+CST_CONVERTED+CST_EXTENSION_MP3,[rfReplaceAll])
-            Else p_ReplaceLanguageString(astl_temp1,'SourceMP3','',[rfReplaceAll]);
-           if FileExistsUTF8(ls_FileWithoutExt+CST_EXTENSION_WMA)
-            Then p_ReplaceLanguageString(astl_temp1,'SourceWMA',ls_SourceMini +CST_EXTENSION_WMA,[rfReplaceAll])
-            Else p_ReplaceLanguageString(astl_temp1,'SourceWMA','',[rfReplaceAll]);
+           p_AddExt (CST_EXTENSION_MP3,'SourceMP3');
+           p_AddExt (CST_EXTENSION_WMA,'SourceWMA');
            p_replaceAllCase(li_pos,as_Ext);
            p_ReplaceLanguageString(astl_temp1,'SourceArtist',as_artist,[rfReplaceAll]);
            if not ab_first Then
@@ -496,12 +514,13 @@ begin
              Else ls_SourceMini := '';
             if ( ai_Level = 1 ) Then
               ab_foundAudio:=False;
-            p_AddFiles ( ls_Source, ls_SourceMini, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_downloadsafter, astl_Processes, ab_first, ab_foundAudio, ab_Root, ab_downloadReally );
+            ls_BackDirText:=as_BackDirText+'../';
+            p_AddFiles ( ls_Source, ls_SourceMini, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_downloadsafter, astl_Processes, ab_first, ab_foundAudio, ab_Root, ab_downloadReally, ls_BackDirText );
             if  ab_foundAudio
             and ( ai_Level = 1 ) // p_genHtmlHome will recall this recursive function
             and ch_IndexAll.Checked Then
              Begin
-              p_genHtmlHome ( ls_Source+DirectorySeparator, as_subdirForward+'../', ls_FileName, False );
+              p_genHtmlHome ( ls_Source+DirectorySeparator, as_subdirForward+'../', ls_FileName, ls_BackDirText, False );
               astl_DirListAudio.Add(ls_Source);
              end;
             if  ab_Root
@@ -648,7 +667,7 @@ begin
   try // starting work
     p_CreateKeyWords;
     gb_Generate := True;
-    p_genHtmlHome ( gs_RootPathForExport, '', '', True );
+    p_genHtmlHome ( gs_RootPathForExport, '', '', '', True );
   finally
     pa_options.Enabled:=True;
     gb_Generate := False;
@@ -844,7 +863,7 @@ End;
 
 // procedure TF_WebPlayer.p_genHtmlHome
 // Default HTML page
-procedure TF_WebPlayer.p_genHtmlHome ( const as_directory, as_subdirForward, as_artist : String;
+procedure TF_WebPlayer.p_genHtmlHome ( const as_directory, as_subdirForward, as_artist, as_backDirText : String;
                                        const ab_Root : Boolean );
 var
   lstl_Temp1,
@@ -852,7 +871,7 @@ var
   lstl_DirList,lstl_DirLine,lstl_ListDirAudio,
   lstl_downloadsAfter, lstl_processes : TStringListUTF8;
   ls_destination,ls_htmlpath: string;
-  ls_Images: string;
+  ls_Images,ls_BackDirText: string;
   li_Count, li_PathToDelete: integer;
   lb_first, lb_foundaudio, lb_downloadReally : boolean;
   procedure p_addRoot;
@@ -896,7 +915,8 @@ begin
     li_PathToDelete := Length(as_directory)+1;
     try
       lb_foundaudio := False;
-      p_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownloads,lstl_downloadsAfter, lstl_processes, lb_first, lb_foundaudio, ab_Root, lb_downloadReally );
+      ls_BackDirText:='';
+      p_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownloads,lstl_downloadsAfter, lstl_processes, lb_first, lb_foundaudio, ab_Root, lb_downloadReally, ls_BackDirText );
     finally
       lstl_Temp1.Free;
     end;
@@ -963,11 +983,11 @@ begin
        if as_directory=''
         Then ls_htmlpath:='/'
         else ls_htmlpath:=copy(as_directory,Length(AppendPathDelim(de_indexdir.Directory)),Length(as_directory));
-       p_ReplaceLanguageString(lstl_HTMLBody,'Describe',CST_ENDOFLINE
-         +'<script type="text/javascript">includeJS( "'+ed_txtName.Text+'."+language+"'+CST_EXTENSION_TXT+CST_EXTENSION_JS+'");'+CST_ENDOFLINE
+       p_ReplaceLanguageString(lstl_HTMLBody,CST_DESCRIBE,CST_ENDOFLINE
+         +'<script type="text/javascript">includeJS( "'+as_backDirText+ed_txtName.Text+'."+language+"'+CST_EXTENSION_TXT+CST_EXTENSION_JS+'");'+CST_ENDOFLINE
          +'</script>'+CST_ENDOFLINE+fs_html_Lines(me_Description.Text ))
       end
-      else p_ReplaceLanguageString(lstl_HTMLBody,'Describe',fs_html_Lines(me_Description.Text ));
+      else p_ReplaceLanguageString(lstl_HTMLBody,CST_DESCRIBE,fs_html_Lines(me_Description.Text ));
     lstl_HTMLHome.AddStrings(lstl_HTMLBody);
     lstl_HTMLBody.Clear;
     p_CreateAHtmlFile(lstl_HTMLHome, CST_INDEX, me_Description.Text,
