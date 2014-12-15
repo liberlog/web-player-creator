@@ -199,7 +199,7 @@ type
       const as_BeforeHTML: string = ''; const astl_Body : TStrings = nil );
     procedure p_genHtmlHome ( const as_directory, as_subdirForward, as_artist, as_backDirText : String;
                               const ab_Root : Boolean );
-    function  p_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
+    function  fb_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
     procedure p_IncProgress;
     procedure p_Setcomments(const as_Comment: String);
     procedure p_Unfat(const as_directory: String);
@@ -593,7 +593,7 @@ end;
 procedure TF_WebPlayer.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
 end;
-function TF_WebPlayer.p_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
+function TF_WebPlayer.fb_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
 begin
   //  verifying
   Result:=False;
@@ -629,7 +629,8 @@ begin
   if gb_Generate then
     Exit;
   ed_TXTName.Text:=LowerCase(ed_TXTName.Text);
-  p_genUnGenPrepare ( ls_Source );
+  if not fb_genUnGenPrepare ( ls_Source )
+   Then Exit;
   if ch_IndexAll.Checked
    Then ls_ToAdd := gs_WebPlayer_Delete_File
    Else ls_ToAdd := '';
@@ -739,9 +740,10 @@ procedure TF_WebPlayer.bt_UnindexClick(Sender: TObject);
 var lstl_List : TStringListUTF8;
     ls_ThemaSource : String;
 begin
-  if gb_Generate then
+  if gb_Generate
+  or fb_genUnGenPrepare(ls_ThemaSource)
+   then
     Exit;
-  p_genUnGenPrepare(ls_ThemaSource);
   gb_Generate := True;
   lstl_List := fstl_CreateListToDelete ( ls_ThemaSource );
   try
