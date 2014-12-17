@@ -7,7 +7,7 @@
 			autoPlay: true,
 			enableRemoveControls: true
 		},
-		swfPath: "",
+		swfPath: "[SubDir]",
 		supplied: "webmv, ogv, m4v, oga, mp3",
 		useStateClassSkin: true,
 		repeat: true,
@@ -186,35 +186,6 @@
 		myPlaylist.option("shuffleTime", 2000);
 	});
 
-	// Equivalent commands
-
-	$("#playlist-equivalent-1-a").click(function() {
-		myPlaylist.add({
-			title:"Your Face",
-			artist:"The Stark Palace",
-			mp3:"http://www.jplayer.org/audio/mp3/TSP-05-Your_face.mp3",
-			oga:"http://www.jplayer.org/audio/ogg/TSP-05-Your_face.ogg",
-			poster: "http://www.jplayer.org/audio/poster/The_Stark_Palace_640x360.png"
-		}, true);
-	});
-
-	$("#playlist-equivalent-1-b").click(function() {
-		myPlaylist.add({
-			title:"Your Face",
-			artist:"The Stark Palace",
-			mp3:"http://www.jplayer.org/audio/mp3/TSP-05-Your_face.mp3",
-			oga:"http://www.jplayer.org/audio/ogg/TSP-05-Your_face.ogg",
-			poster: "http://www.jplayer.org/audio/poster/The_Stark_Palace_640x360.png"
-		});
-		myPlaylist.play(-1);
-	});
-
-	// AVOID COMMANDS
-
-	$("#playlist-avoid-1").click(function() {
-		myPlaylist.remove(2); // Removes the 3rd item
-		myPlaylist.remove(3); // Ignored unless removeTime=0: Where it removes the 4th item, which was originally the 5th item.
-	});
 
 });
 function DirectoriesShowHide() {
