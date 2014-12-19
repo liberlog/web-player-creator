@@ -189,7 +189,7 @@ type
                            const astl_DirListAudio, astl_temp1,
                                  astl_downloads, astl_downloadsafter , astl_Processes : TStrings;
                            var   ab_first, ab_foundAudio : Boolean;
-                           const ab_Root : Boolean ; var ab_downloadReally : Boolean;
+                           const ab_Root : Boolean ; var ab_downloadReally, ab_TextOneLanguage : Boolean;
                            var   as_BackDirText : String);
     procedure p_AddToCombo(const acb_combo: TComboBox; const as_Base: String;
       const ab_SetIndex: Boolean=True);
@@ -199,7 +199,7 @@ type
       const as_ExtFile: string = CST_EXTENSION_HTML;
       const as_BeforeHTML: string = ''; const astl_Body : TStrings = nil );
     procedure p_genHtmlHome ( const as_directory, as_subdirForward, as_artist, as_backDirText : String;
-                              const ab_Root : Boolean );
+                              const ab_TextOneLanguage, ab_Root : Boolean );
     function  fb_genUnGenPrepare( var as_ThemaSource : String ):Boolean;
     procedure p_IncProgress;
     procedure p_Setcomments(const as_Comment: String);
@@ -294,7 +294,7 @@ procedure TF_WebPlayer.p_AddFiles ( const as_Source, as_artist, as_subdirForward
                                     const astl_DirListAudio, astl_temp1,
                                           astl_downloads, astl_downloadsafter, astl_Processes : TStrings;
                                     var   ab_first, ab_foundAudio : Boolean;
-                                    const ab_Root : Boolean ; var ab_downloadReally : Boolean;
+                                    const ab_Root : Boolean ; var ab_downloadReally, ab_TextOneLanguage : Boolean;
                                     var  as_BackDirText : String );
 var li_EndExt : Integer ;
     ls_Source ,
@@ -304,6 +304,7 @@ var li_EndExt : Integer ;
     ls_FileNameLower ,
     ls_destination  : String;
     lsr_AttrSource      : Tsearchrec;
+    lb_TextOneLanguage,
     lb_first : Boolean;
     li_pos : Integer;
     ls_BackDirText:String;
@@ -545,14 +546,15 @@ begin
             if ( ai_Level = 1 ) Then
               ab_foundAudio:=False;
             ls_BackDirText:=as_BackDirText+'../';
+            lb_TextOneLanguage:=False;
         //    if ls_FileName='Bach'
            //  then ShowMessage(ls_BackDirText+' '+as_BackDirText);
-            p_AddFiles ( ls_Source, ls_DirHtml, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_downloadsafter, astl_Processes, ab_first, ab_foundAudio, ab_Root, ab_downloadReally, ls_BackDirText );
+            p_AddFiles ( ls_Source, ls_DirHtml, as_subdirForward+'../', astl_files, ai_eraseBegin, ai_Level + 1, astl_DirListAudio, astl_temp1, astl_downloads, astl_downloadsafter, astl_Processes, ab_first, ab_foundAudio, ab_Root, ab_downloadReally, lb_TextOneLanguage, ls_BackDirText );
             if  ab_foundAudio
             and ( ai_Level = 1 ) // p_genHtmlHome will recall this recursive function
             and ch_IndexAll.Checked Then
              Begin
-              p_genHtmlHome ( ls_Source+DirectorySeparator, as_subdirForward+'../', ls_FileName, ls_BackDirText, False );
+              p_genHtmlHome ( ls_Source+DirectorySeparator, as_subdirForward+'../', ls_FileName, ls_BackDirText, lb_TextOneLanguage, False );
               astl_DirListAudio.Add(ls_Source);
              end;
             if  ab_Root
@@ -569,10 +571,14 @@ begin
 
                p_addFile( ch_MP3.Checked, CST_EXTENSION_MP3 );
                p_addFile( ch_WMA.Checked, CST_EXTENSION_WMA );
-              if ch_TXT.Checked
-              and (pos ( CST_EXTENSION_TXT  , ls_FileNameLower ) >= li_EndExt)
-              and (pos ( ed_TXTName.Text+'.', ls_FileNameLower ) = 1 ) Then
-                p_addText ( ls_Source );
+              if ch_TXT.Checked Then
+               Begin
+                if ( ls_FileNameLower = ed_TXTName.Text + CST_EXTENSION_TXT )
+                 Then ab_TextOneLanguage := True;
+                if (pos ( CST_EXTENSION_TXT  , ls_FileNameLower ) >= li_EndExt)
+                and (pos ( ed_TXTName.Text+'.', ls_FileNameLower ) = 1 ) Then
+                  p_addText ( ls_Source );
+               end;
 {              if (pos ( CST_EXTENSION_TXT+CST_EXTENSION_JS  , ls_FileNameLower ) >= li_EndExt-3)
               and (pos ( ed_TXTName.Text+'.', ls_FileNameLower ) = 1 ) Then
                 p_addOldText ( ls_Source );}
@@ -703,7 +709,7 @@ begin
   try // starting work
     p_CreateKeyWords;
     gb_Generate := True;
-    p_genHtmlHome ( gs_RootPathForExport, '', '', '', True );
+    p_genHtmlHome ( gs_RootPathForExport, '', '', '', False, True );
   finally
     pa_options.Enabled:=True;
     gb_Generate := False;
@@ -901,7 +907,7 @@ End;
 // procedure TF_WebPlayer.p_genHtmlHome
 // Default HTML page
 procedure TF_WebPlayer.p_genHtmlHome ( const as_directory, as_subdirForward, as_artist, as_backDirText : String;
-                                       const ab_Root : Boolean );
+                                       const ab_TextOneLanguage, ab_Root : Boolean );
 var
   lstl_Temp1,
   lstl_HTMLHome,lstl_HTMLBody,lstl_HTMLDownloads,
@@ -910,7 +916,7 @@ var
   ls_destination,ls_htmlpath: string;
   ls_Images,ls_BackDirText: string;
   li_Count, li_PathToDelete: integer;
-  lb_first, lb_foundaudio, lb_downloadReally : boolean;
+  lb_first, lb_foundaudio, lb_TextOneLanguage, lb_downloadReally : boolean;
   procedure p_addRoot;
   var ls_IndexDir, ls_subdir : String ;
   Begin
@@ -939,7 +945,8 @@ begin
   p_ReplaceLanguageString(lstl_HTMLBody,'Caption',gs_WebPlayer_Back,[rfReplaceAll]);
   lstl_HTMLDownloads.AddStrings(lstl_HTMLBody);
   lstl_HTMLBody.clear;
-  lb_downloadReally := False;
+  lb_downloadReally  := False;
+  lb_TextOneLanguage := False;
   if ab_Root
   and ch_convert.Checked Then
    lstl_processes := TStringListUTF8.Create;
@@ -953,7 +960,7 @@ begin
     try
       lb_foundaudio := False;
       ls_BackDirText:='';
-      p_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownloads,lstl_downloadsAfter, lstl_processes, lb_first, lb_foundaudio, ab_Root, lb_downloadReally, ls_BackDirText );
+      p_AddFiles ( as_directory, as_artist, as_subdirForward, lstl_HTMLHome, li_PathToDelete,1,lstl_ListDirAudio,lstl_Temp1,lstl_HTMLDownloads,lstl_downloadsAfter, lstl_processes, lb_first, lb_foundaudio, ab_Root, lb_downloadReally, lb_TextOneLanguage, ls_BackDirText );
     finally
       lstl_Temp1.Free;
     end;
@@ -1020,9 +1027,14 @@ begin
        if as_directory=''
         Then ls_htmlpath:='/'
         else ls_htmlpath:=copy(as_directory,Length(AppendPathDelim(de_indexdir.Directory)),Length(as_directory));
-       p_ReplaceLanguageString(lstl_HTMLBody,CST_DESCRIBE,CST_ENDOFLINE
-         +'<script type="text/javascript">includeJS( "'+as_backDirText+ed_txtName.Text+'."+language+"'+CST_EXTENSION_TXT+CST_EXTENSION_JS+'");'+CST_ENDOFLINE
-         +'</script>'+CST_ENDOFLINE+fs_html_Lines(me_Description.Text ))
+       if ab_TextOneLanguage Then   // unique language text file
+         p_ReplaceLanguageString(lstl_HTMLBody,CST_DESCRIBE,CST_ENDOFLINE
+           +'<script type="text/javascript">includeJS( "'+as_backDirText+ed_txtName.Text+CST_EXTENSION_TXT+CST_EXTENSION_JS+'");'+CST_ENDOFLINE
+           +'</script>'+CST_ENDOFLINE+fs_html_Lines(me_Description.Text ))
+        else
+         p_ReplaceLanguageString(lstl_HTMLBody,CST_DESCRIBE,CST_ENDOFLINE
+           +'<script type="text/javascript">includeJS( "'+as_backDirText+ed_txtName.Text+'."+language+"'+CST_EXTENSION_TXT+CST_EXTENSION_JS+'");'+CST_ENDOFLINE
+           +'</script>'+CST_ENDOFLINE+fs_html_Lines(me_Description.Text ))
       end
       else p_ReplaceLanguageString(lstl_HTMLBody,CST_DESCRIBE,fs_html_Lines(me_Description.Text ));
     lstl_HTMLHome.AddStrings(lstl_HTMLBody);
