@@ -1,0 +1,1 @@
+Before updating map javascript, do not forget to set width of image to "auto".
