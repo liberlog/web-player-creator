@@ -811,7 +811,7 @@ begin
         Begin
          if (astl_List1ToUnindex.IndexOf(lstl_FilesToVerify[0]) > -1)
          or  (  ch_TXT.Checked and (pos(ed_TXTName.Text+'.',lstl_FilesToVerify[0])=1)
-                and (pos ( CST_EXTENSION_TXT+CST_EXTENSION_JS,lstl_FilesToVerify[0])>Length(lstl_FilesToVerify[0])-8))
+                and (pos ( CST_EXTENSION_TXT+CST_EXTENSION_JS,lstl_FilesToVerify[0])>0))
           Then
             DeleteFileUTF8(as_directory+lstl_FilesToVerify[0])
         end;
